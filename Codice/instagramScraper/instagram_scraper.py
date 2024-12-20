@@ -54,12 +54,6 @@ def getInfos(driver, link):
         descrizione=' '.join(filtered_list[:-1])
         datetime=filtered_list[-1]
 
-    """
-    print("Nome: ",name)
-    print("Luogo: ", luogo)
-    print("Like: ",like)
-    print("Descrizione: ",descrizione)
-    print("Datetime: ",datetime)
-    """
+    followersNumber=getNumberAccountFollowers(driver, name)
 
-    return name,luogo,like,descrizione,datetime
+    return name,luogo,like,descrizione,datetime, followersNumber
