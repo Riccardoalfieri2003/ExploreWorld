@@ -5,6 +5,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException
 import time
 import os
 
@@ -43,7 +45,7 @@ def upload_post(driver, image_path, description, location):
 
     # Trova l'input nascosto per il caricamento del file e carica l'immagine
     upload_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
-    upload_input.send_keys(image_path)  # Invia il percorso dell'immagine all'input
+    upload_input.send_keys("\n".join(image_path))  # Invia il percorso dell'immagine all'input
     time.sleep(5)  # Attende il caricamento dell'immagine
 
     # Clicca sul pulsante "Avanti" per procedere al passaggio successivo
@@ -74,35 +76,49 @@ def upload_post(driver, image_path, description, location):
     #description_input.send_keys(description)  # Inserisce la descrizione
     #time.sleep(5)
 
-    # Trova e inserisce la descrizione nel campo "Scrivi una didascalia"
-    try:
-        caption_area = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//textarea[@aria-label='Scrivi una didascalia...']"))
-        )
-        caption_area.send_keys(description)
-        time.sleep(2)
-    except Exception as e:
-        print(f"Errore nell'inserimento della descrizione: {e}")
+    # aggiunta della didascalia funzionante
+    caption_area = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[@role='textbox' and @aria-placeholder='Scrivi una didascalia...']"))
+    )
+    caption_area.click()  # Fai clic prima di inviare testo
+    caption_area.send_keys(description)
 
-    # Aggiungi il luogo
+    # Aggiungi il luogo //Funziona
+    #location_input = driver.find_element(By.CSS_SELECTOR, "input[placeholder='Aggiungi luogo']")
+    #location_input.send_keys(location)  # Inserisce il luogo
+    #time.sleep(2)
+
+    #riesce ad aggiungere quello richiesto
     location_input = driver.find_element(By.CSS_SELECTOR, "input[placeholder='Aggiungi luogo']")
-    location_input.send_keys(location)  # Inserisce il luogo
+    location_input.send_keys(location)
     time.sleep(2)
-
-    # Attendi l'apparizione del suggerimento e selezionalo (se necessario)
-    try:
-        first_suggestion = WebDriverWait(driver, 5).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(@class, 'suggestions') and text()='" + location + "']"))
-        )
-        first_suggestion.click()
-    except:
-        print("Nessun suggerimento selezionato, procedo senza selezione.")
-
 
     #buttons = driver.find_elements(By.XPATH, "//button")
     #for button in buttons:
        #print(button.text)  # Stampa il testo di ogni pulsante trovato
+
+
+        # Trova tutti i bottoni sulla pagina
+    buttons = driver.find_elements(By.XPATH, "//button")
+    buttons[0].click()
+    time.sleep(10)
+
+        # Itera attraverso i bottoni per trovare quello con il testo corrispondente
+       # for button in buttons:
+        #    print(button.text)  # Per debugging, stampa il testo di ogni bottone trovato
+
+           # if button.text.strip() == location.strip():  # Confronta il testo con il valore di `location`
+               # time.sleep(2)
+                #button.click()  # Clicca sul bottone corrispondente
+
+
+       # else:
+            # Se nessun bottone corrisponde al testo desiderato
+        #    print(f"Errore: Nessun bottone corrisponde al luogo '{location}'")
+
+    #except NoSuchElementException:
+     #   print("Errore: Non è stato possibile trovare il bottone.")
 
 
 
@@ -126,11 +142,16 @@ if __name__ == "__main__":
 
     try:
         # Credenziali dell'account Instagram
-        username = "explore_world_30"  # Sostituisci con il nome utente del tuo account
-        password = "FraRic2003"  # Sostituisci con la password del tuo account
+        username = "provariccncesco"  # Sostituisci con il nome utente del tuo account
+        password = "FraRicc2003"  # Sostituisci con la password del tuo account
 
         # Percorso dell'immagine da caricare
-        image_path = r"C:\Users\Ciccio Mascolo\Desktop\Ischia.jpg"  # Percorso dell'immagine
+        image_path = [
+            r"C:\Users\Ciccio Mascolo\Desktop\Ischia.jpg",
+            r"C:\Users\Ciccio Mascolo\Desktop\Ischia2.jpg",
+            r"C:\Users\Ciccio Mascolo\Desktop\Ischia3.jpg"
+            ]# Percorso dell'immagine
+
 
         # Descrizione del post
         description = "Panorama di ischia"  # Testo della descrizione
@@ -146,5 +167,4 @@ if __name__ == "__main__":
         print(f"Errore: {e}")  # Mostra eventuali errori
     finally:
         driver.quit()  # Chiude il browser anche in caso di errori
-
 
