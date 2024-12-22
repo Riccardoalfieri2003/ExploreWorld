@@ -1,3 +1,4 @@
+
 from selenium.common.exceptions import TimeoutException
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -48,6 +49,7 @@ def getInfos(driver, link):
         del filtered_list[1]
         del filtered_list[1]
     except Exception as e: pass
+
     """
         print("Errore")
         print(lista_string)
@@ -58,31 +60,35 @@ def getInfos(driver, link):
         #print(filtered_list)
         #print(e)
         """
-
-
     name=filtered_list[0]
-    if "Piace a " in filtered_list[1]: 
-        luogo=None
-        like=filtered_list[1].split(' ')[2]
-        filtered_list=filtered_list[3:]
+    try:
+        name=filtered_list[0]
+        if "Piace a " in filtered_list[1]: 
+            luogo=None
+            like=filtered_list[1].split(' ')[2]
+            filtered_list=filtered_list[3:]
 
-        if datetime_value!=None: 
-            descrizione=' '.join(filtered_list[:-1])
-            datetime=filtered_list[-1]
-        else: descrizione=' '.join(filtered_list[:-0])
+            if datetime_value!=None: 
+                descrizione=' '.join(filtered_list[:-1])
+                datetime=filtered_list[-1]
+            else: descrizione=' '.join(filtered_list[:-0])
 
-    else: 
-        luogo=filtered_list[1]
-        like=filtered_list[2].split(' ')[2]
-        filtered_list=filtered_list[4:]
+        else: 
+            luogo=filtered_list[1]
+            like=filtered_list[2].split(' ')[2]
+            filtered_list=filtered_list[4:]
 
-        if datetime_value!=None: 
-            descrizione=' '.join(filtered_list[:-1])
-            datetime=filtered_list[-1]
-        else: descrizione=' '.join(filtered_list[:-0])
+            if datetime_value!=None: 
+                descrizione=' '.join(filtered_list[:-1])
+                datetime=filtered_list[-1]
+            else: descrizione=' '.join(filtered_list[:-0])
+    except: pass
 
-    followersNumber=getNumberAccountFollowers(driver, name)
-    numImmagini=getNumImmagini(driver,link)
+    try: followersNumber=getNumberAccountFollowers(driver, name)
+    except: followersNumber=None
+    #followersNumber=None
+    try: numImmagini=getNumImmagini(driver,link)
+    except: numImmagini=None
 
     """
     print("Nome: ",name)
