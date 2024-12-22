@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.common.exceptions import NoSuchElementException
+from create_driver import createDriver
 import time
 import os
 
@@ -94,15 +95,15 @@ def upload_post(driver, image_path, description, location):
     location_input.send_keys(location)
     time.sleep(2)
 
-    #buttons = driver.find_elements(By.XPATH, "//button")
+    buttons = driver.find_elements(By.XPATH, "//button")
     #for button in buttons:
        #print(button.text)  # Stampa il testo di ogni pulsante trovato
 
-
-        # Trova tutti i bottoni sulla pagina
-    buttons = driver.find_elements(By.XPATH, "//button")
-    buttons[0].click()
-    time.sleep(10)
+    i = 0
+    for button in buttons:
+        print(i, ": ", button.text)  # Per debugging, stampa il testo di ogni bottone trovato
+        i += 1
+    buttons[3].click()
 
         # Itera attraverso i bottoni per trovare quello con il testo corrispondente
        # for button in buttons:
@@ -130,15 +131,17 @@ def upload_post(driver, image_path, description, location):
 
 if __name__ == "__main__":
     # Percorso del driver di Chrome
-    chrome_driver_path = r'C:\Users\Ciccio Mascolo\Desktop\chromedriver-win64\chromedriver.exe'
+    #chrome_driver_path = r'C:\Users\Ciccio Mascolo\Desktop\chromedriver-win64\chromedriver.exe'
 
     # Configurazione delle opzioni del driver di Chrome
-    options = Options()
-    options.add_argument("--start-maximized")  # Avvia il browser in modalità a schermo intero
-    options.add_argument("--disable-notifications")  # Disabilita le notifiche del browser
+    #options = Options()
+    #options.add_argument("--start-maximized")  # Avvia il browser in modalità a schermo intero
+    #options.add_argument("--disable-notifications")  # Disabilita le notifiche del browser
 
     # Inizializza il driver con le opzioni e il percorso specificato
-    driver = webdriver.Chrome(service=Service(chrome_driver_path), options=options)
+    #driver = webdriver.Chrome(service=Service(chrome_driver_path), options=options)
+
+    driver = createDriver()
 
     try:
         # Credenziali dell'account Instagram
