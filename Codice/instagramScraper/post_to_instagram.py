@@ -35,7 +35,7 @@ def login_to_instagram(driver, username, password):
 
     time.sleep(5)  # Attende 5 secondi per completare il processo di login
 
-def upload_post(driver, image_path, description):
+def upload_post(driver, image_path, description, location):
     # Trova il pulsante per creare un nuovo post (tramite l'icona del "+" nella barra superiore)
     new_post_button = driver.find_element(By.CSS_SELECTOR, "svg[aria-label='Nuovo post']")
     new_post_button.click()
@@ -61,9 +61,49 @@ def upload_post(driver, image_path, description):
     button.click()
     time.sleep(5)
 
+    #caption_area = driver.find_element(By.CSS_SELECTOR, "//div[@role='textarea' and text()='Scrivi una didascalia…']")
+    #driver.execute_script("arguments[0].scrollIntoView();", caption_area)
+    #caption_area.send_keys(description)
+    #time.sleep(2)
+
+    #caption_area = driver.find_element(By.CSS_SELECTOR, "textarea[aria-label='Scrivi una didascalia…']")
+    #caption_area.send_keys(description)
+    #time.sleep(2)
+
+    #description_input = driver.find_element(By.CSS_SELECTOR, "input[aria-placeholder='Scrivi una didascalia...']")
+    #description_input.send_keys(description)  # Inserisce la descrizione
+    #time.sleep(5)
+
+    # Trova e inserisce la descrizione nel campo "Scrivi una didascalia"
+    try:
+        caption_area = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//textarea[@aria-label='Scrivi una didascalia...']"))
+        )
+        caption_area.send_keys(description)
+        time.sleep(2)
+    except Exception as e:
+        print(f"Errore nell'inserimento della descrizione: {e}")
+
+    # Aggiungi il luogo
+    location_input = driver.find_element(By.CSS_SELECTOR, "input[placeholder='Aggiungi luogo']")
+    location_input.send_keys(location)  # Inserisce il luogo
+    time.sleep(2)
+
+    # Attendi l'apparizione del suggerimento e selezionalo (se necessario)
+    try:
+        first_suggestion = WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[contains(@class, 'suggestions') and text()='" + location + "']"))
+        )
+        first_suggestion.click()
+    except:
+        print("Nessun suggerimento selezionato, procedo senza selezione.")
+
+
     #buttons = driver.find_elements(By.XPATH, "//button")
     #for button in buttons:
        #print(button.text)  # Stampa il testo di ogni pulsante trovato
+
 
 
     #Trova e clicca sul pulsante "Condividi" per pubblicare il post
@@ -95,13 +135,16 @@ if __name__ == "__main__":
         # Descrizione del post
         description = "Panorama di ischia"  # Testo della descrizione
 
+        location = "Ischia";
+
         # Esegue il login e pubblica il post
         login_to_instagram(driver, username, password)
-        upload_post(driver, image_path, description)
+        upload_post(driver, image_path, description,location)
 
         print("Post pubblicato con successo!")  # Messaggio di conferma
     except Exception as e:
         print(f"Errore: {e}")  # Mostra eventuali errori
     finally:
         driver.quit()  # Chiude il browser anche in caso di errori
+
 
