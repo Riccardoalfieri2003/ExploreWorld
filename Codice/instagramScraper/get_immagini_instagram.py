@@ -20,7 +20,7 @@ def getNumImmagini(driver, link):
     if len(xButtons)>0: 
         if len(xButtons)==5:xButtons[4].click()
 
-    time.sleep(2)
+    #time.sleep(20)
 
 
     #<button class="_a9-- _ap36 _a9_1" tabindex="0">Rifiuta cookie facoltativi</button>
@@ -29,6 +29,9 @@ def getNumImmagini(driver, link):
 
     #immagini=driver.find_elements(By.CLASS_NAME,"_aagv")
     buttons=driver.find_elements(By.CSS_SELECTOR,"button._afxw")
+    #print(len(buttons))
+    for button in buttons: print(button.text)
+
     if len(buttons)==0: return 1
     else: button=buttons[0]
 
@@ -40,20 +43,35 @@ def getNumImmagini(driver, link):
         try:
             # Check if the button is still present and visible
             if button.is_displayed():
-                #print(f"Button presente")
 
-                driver.execute_script("arguments[0].scrollIntoView(true);", button)
+                #print("qui")
+
+                #nascosto= driver.find_elements(By.CSS_SELECTOR,"div._acuq")
+                #print(len(nascosto))
+                #for nas in nascosto: print(nas.get_attribute('outerHTML'))
+
+                #time.sleep(2)
+
+                print(f"Button presente")
+
+                #driver.execute_script("arguments[0].scrollIntoView(true);", button)
+                driver.execute_script("arguments[0].setAttribute('tabindex', '1');", button)
                 button.click()  # Press the button
                 press_count += 1  # Increment the counter
                 #print(f"Button pressed {press_count} times.")
-                time.sleep(1)  # Add a small delay to prevent rapid clicks
+                time.sleep(0.5)  # Add a small delay to prevent rapid clicks
                 # Optionally, re-find the button after each click (in case it reloads)
                 #button = driver.find_element(By.CSS_SELECTOR, 'button_selector')
             else:
                 #print("Button is no longer visible.")
                 break  # Exit the loop if the button is not visible
         except Exception as e:
-            #print(f"Error: {e}")
+            print(f"Error: {e}")
             break  # Exit the loop if an error occurs (e.g., element not found)
 
     return press_count+1
+
+
+#driver= createDriver()
+#numIm=getNumImmagini(driver,'https://www.instagram.com/p/DCgfA9JS6Ud/')
+#print(numIm)
