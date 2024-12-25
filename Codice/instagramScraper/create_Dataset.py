@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+import emoji  # Libreria per il supporto alle emoticon Unicode
 
 # Funzione per leggere il file e creare un DataFrame
 def txt_to_dataframe(file_path):
@@ -45,15 +46,15 @@ def count_words(text):
 
 # Funzione per calcolare il numero di emoticon in un testo
 def count_emoticons(text):
-    # Regular expression per rilevare emoticon
-    emoticon_pattern = r'[:;=8][\-o]?[)D\]\[/\(\|P]'
-    return len(re.findall(emoticon_pattern, text)) if text else 0
+    # Usa la libreria emoji per rilevare emoticon Unicode
+    return sum(1 for char in text if char in emoji.EMOJI_DATA) if text else 0
 
 # Funzione per calcolare il numero di menzioni in un testo
 def count_mentions(text):
-    # Regular expression per rilevare menzioni
-    mention_pattern = r'@\w+'
+    # Regular expression per rilevare menzioni (esclude le email)
+    mention_pattern = r'(?<!\S)@(\w+)(?!\.\w)'  # Trova menzioni che non sono seguite da domini di email
     return len(re.findall(mention_pattern, text)) if text else 0
+
 
 # Funzione per calcolare il numero di hashtag in un testo
 def count_hashtags(text):
@@ -85,17 +86,26 @@ def check_location_association(row):
 
 # Funzione per contare quante volte il luogo è menzionato nella descrizione
 def count_location_occurrences(row):
-    luogo = row['Luogo'].lower()  # Converte il nome del luogo in minuscolo per una ricerca case-insensitive
-    descrizione = row['Descrizione'].lower()  # Lo stesso per la descrizione
+    luogo = row['Luogo'].lower()  # Nome del luogo in minuscolo
+    descrizione = row['Descrizione'].lower()  # Descrizione in minuscolo
 
-    # Conta quante volte il nome del luogo appare nel testo, come parola, hashtag o menzione
-    luogo_count = descrizione.count(luogo)  # Conta le occorrenze dirette del luogo
+    # Divide il luogo in parole singole
+    luogo_parole = luogo.split()
 
-    # Conta quante volte appare come hashtag o menzione
-    luogo_count += len(re.findall(rf'#{re.escape(luogo)}', descrizione))  # Conta come hashtag
-    luogo_count += len(re.findall(rf'@{re.escape(luogo)}', descrizione))  # Conta come menzione
+    # Conta le occorrenze dirette del nome completo del luogo
+    luogo_count = descrizione.count(luogo)
+
+    # Conta le occorrenze di ciascuna parola significativa del luogo
+    for parola in luogo_parole:
+        # Ignora parole troppo generiche come "new", "city", ecc.
+        if len(parola) > 3:  # Solo parole con più di 3 lettere
+            # Conta parole isolate o in contesti specifici (# o @)
+            luogo_count += len(re.findall(rf'\b{re.escape(parola)}\b', descrizione))  # Parola isolata
+            luogo_count += len(re.findall(rf'#{re.escape(parola)}', descrizione))  # Come hashtag
+            luogo_count += len(re.findall(rf'@{re.escape(parola)}', descrizione))  # Come menzione
 
     return luogo_count
+
 
 # Percorso al file txt generato
 file_path = 'instagram_posts.txt'
@@ -115,6 +125,8 @@ df['Associazione a luogo'] = df.apply(check_location_association, axis=1)
 
 # Aggiungi la colonna "Associazione a luogo" con il conteggio delle occorrenze del luogo nella descrizione
 df['Occorrenze del Luogo'] = df.apply(count_location_occurrences, axis=1)
+
+df = df.drop(columns=['Descrizione'])  # Rimuove la colonna "Descrizione"
 
 # Mostra i primi 5 record
 print(df.head())
