@@ -103,7 +103,7 @@ def upload_post(driver, image_path, description, location):
     for button in buttons:
         print(i, ": ", button.text)  # Per debugging, stampa il testo di ogni bottone trovato
         i += 1
-    buttons[3].click()
+    buttons[2].click()
 
         # Itera attraverso i bottoni per trovare quello con il testo corrispondente
        # for button in buttons:
