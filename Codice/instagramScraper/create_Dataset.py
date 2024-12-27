@@ -114,19 +114,20 @@ file_path = 'instagram_posts.txt'
 df = txt_to_dataframe(file_path)
 
 # Riordina le colonne nel caso in cui siano disordinate
-colonne_ordinate = ['Luogo', 'Like', 'Descrizione', 'Data', 'Ora', 'Followers', 'NumImmagini']
+colonne_ordinate = ['Nome','Luogo', 'Like', 'Descrizione', 'Data', 'Ora', 'Followers', 'NumImmagini']
 df = df[colonne_ordinate]
 
 # Aggiungi le colonne di analisi del testo
 df = add_text_columns(df)
 
 # Aggiungi la colonna "Associazione a luogo" controllando la presenza del luogo nella descrizione
-df['Associazione a luogo'] = df.apply(check_location_association, axis=1)
+#df['Associazione a luogo'] = df.apply(check_location_association, axis=1)
 
 # Aggiungi la colonna "Associazione a luogo" con il conteggio delle occorrenze del luogo nella descrizione
 df['Occorrenze del Luogo'] = df.apply(count_location_occurrences, axis=1)
 
 df = df.drop(columns=['Descrizione'])  # Rimuove la colonna "Descrizione"
+df = df.drop(columns=['Nome'])
 
 # Mostra i primi 5 record
 print(df.head())
