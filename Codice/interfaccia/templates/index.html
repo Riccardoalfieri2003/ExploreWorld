@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%; width: 100%;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExploreWorld</title>
+
+    <style>
+        /* Stile per il simbolo di caricamento */
+        .loader {
+            border: 4px solid #f3f3f3; /* Colore del bordo */
+            border-top: 4px solid #3498db; /* Colore del bordo superiore */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite; /* Animazione */
+            margin-left: 10px; /* Distanza dal pulsante */
+            display: none; /* Inizialmente nascosto */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Stile per il simbolo di completamento */
+        .completato {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border: 2px solid #4CAF50; /* Bordo verde */
+            border-radius: 5px;
+            display: none; /* Inizialmente nascosto */
+            position: relative;
+            margin-left: 10px; /* Distanza dal pulsante */
+        }
+
+        .completato::after {
+            content: "✔"; /* Spunta */
+            font-size: 20px;
+            color: #4CAF50; /* Colore verde */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+
+    <style>
+        .rettangolo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            width: 250px;
+            height: auto;
+            background-color: green;
+            margin-right: 20px;
+            position: relative;
+            padding: 10px;
+        }
+
+        .btn-elimina {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .rettangolo-immagine {
+            width: 200px;
+            height: 100px;
+            background-color: #ccc; /* Colore di sfondo per l'immagine */
+        }
+
+        .checkbox-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .checkbox-group label {
+            margin-left: 10px; /* Distanza tra la checkbox e il testo */
+        }
+
+        #foto {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 20px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+
+        #iconContainer {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-left: 20px;
+            flex-shrink: 0;
+        }
+
+        .btn-azione {
+            margin-top: 5px; /* Distanza dalla terza checkbox */
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-azione:hover {
+            background-color: #0056b3;
+        }
+
+
+    </style>
+
+
+
+
+
+
+
+    <script>
+
+
+let rettangoliAggiunti = 0;
+function aggiungiRettangolo() {
+    if (rettangoliAggiunti >= 5) {
+        return;
+    }
+
+    rettangoliAggiunti++;
+
+    const rettangolo = document.createElement("div");
+    rettangolo.classList.add("rettangolo");
+    rettangolo.setAttribute("data-id", rettangoliAggiunti); // Aggiungi un identificatore unico
+
+    const btnElimina = document.createElement("button");
+    btnElimina.innerHTML = "-";
+    btnElimina.classList.add("btn-elimina");
+    btnElimina.onclick = function() {
+        rettangolo.remove();
+        rettangoliAggiunti--;
+        if (rettangoliAggiunti < 5) {
+            const iconContainer = document.getElementById("iconContainer");
+            iconContainer.style.display = "flex";
+        }
+    };
+
+    rettangolo.appendChild(btnElimina);
+
+    const rettangoloImmagine = document.createElement("div");
+    rettangoloImmagine.classList.add("rettangolo-immagine");
+    rettangolo.appendChild(rettangoloImmagine);
+
+    const immagine = document.createElement("img");
+    immagine.src = "path_to_image.jpg"; // Immagine di default
+    immagine.alt = "Immagine";
+    immagine.style.width = "100%";
+    immagine.style.height = "100%";
+    rettangoloImmagine.appendChild(immagine);
+
+    // Primo gruppo di checkbox (3 opzioni) - Posizionato in alto
+    const checkboxContainer1 = document.createElement("div");
+    checkboxContainer1.classList.add("checkbox-container");
+    checkboxContainer1.style.marginTop = "10px";
+
+    const opzioni1 = ["Mattina", "Alba/Tramonto", "Notte"];
+    opzioni1.forEach((opzione, index) => {
+        const checkboxGroup = document.createElement("div");
+        checkboxGroup.classList.add("checkbox-group");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `opzione1-${index}-${rettangoliAggiunti}`;
+        checkbox.name = `opzione1-${index}-${rettangoliAggiunti}`;
+        checkbox.value = opzione;
+
+        const label = document.createElement("label");
+        label.htmlFor = `opzione1-${index}-${rettangoliAggiunti}`;
+        label.appendChild(document.createTextNode(opzione));
+
+        checkboxGroup.appendChild(checkbox);
+        checkboxGroup.appendChild(label);
+        checkboxContainer1.appendChild(checkboxGroup);
+    });
+
+    rettangolo.appendChild(checkboxContainer1);
+
+    // Secondo gruppo di checkbox (2 opzioni) - Posizionato al centro
+    const checkboxContainer2 = document.createElement("div");
+    checkboxContainer2.classList.add("checkbox-container");
+    checkboxContainer2.style.marginTop = "20px";
+
+    const opzioni2 = ["Persone", "No Persone"];
+    opzioni2.forEach((opzione, index) => {
+        const checkboxGroup = document.createElement("div");
+        checkboxGroup.classList.add("checkbox-group");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `opzione2-${index}-${rettangoliAggiunti}`;
+        checkbox.name = `opzione2-${index}-${rettangoliAggiunti}`;
+        checkbox.value = opzione;
+
+        const label = document.createElement("label");
+        label.htmlFor = `opzione2-${index}-${rettangoliAggiunti}`;
+        label.appendChild(document.createTextNode(opzione));
+
+        checkboxGroup.appendChild(checkbox);
+        checkboxGroup.appendChild(label);
+        checkboxContainer2.appendChild(checkboxGroup);
+    });
+
+    rettangolo.appendChild(checkboxContainer2);
+
+    // Terzo gruppo di checkbox (3 opzioni) - Posizionato in basso
+    const checkboxContainer3 = document.createElement("div");
+    checkboxContainer3.classList.add("checkbox-container");
+    checkboxContainer3.style.marginTop = "20px";
+    checkboxContainer3.style.marginBottom = "10px";
+
+    const opzioni3 = ["Mare", "Montagna", "Città"];
+    opzioni3.forEach((opzione, index) => {
+        const checkboxGroup = document.createElement("div");
+        checkboxGroup.classList.add("checkbox-group");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `opzione3-${index}-${rettangoliAggiunti}`;
+        checkbox.name = `opzione3-${index}-${rettangoliAggiunti}`;
+        checkbox.value = opzione;
+
+        const label = document.createElement("label");
+        label.htmlFor = `opzione3-${index}-${rettangoliAggiunti}`;
+        label.appendChild(document.createTextNode(opzione));
+
+        checkboxGroup.appendChild(checkbox);
+        checkboxGroup.appendChild(label);
+        checkboxContainer3.appendChild(checkboxGroup);
+    });
+    rettangolo.appendChild(checkboxContainer3);
+
+    // Aggiungi il pulsante "Azione"
+    const btnAzione = document.createElement("button");
+    btnAzione.classList.add("btn-azione");
+    btnAzione.innerHTML = "Azione";
+    btnAzione.onclick = async function() {
+        const rettangoloId = rettangolo.getAttribute("data-id"); // Ottieni l'ID del rettangolo corrente
+        const selezioni = {
+            opzioni1: [],
+            opzioni2: [],
+            opzioni3: [],
+            risultati: risultati // Includi l'array risultati
+        };
+
+        // Raccogli i valori selezionati per il primo gruppo di checkbox
+        opzioni1.forEach((opzione, index) => {
+            const checkbox = document.getElementById(`opzione1-${index}-${rettangoloId}`);
+            if (checkbox.checked) {
+                selezioni.opzioni1.push(checkbox.value);
+            }
+        });
+
+        // Raccogli i valori selezionati per il secondo gruppo di checkbox
+        opzioni2.forEach((opzione, index) => {
+            const checkbox = document.getElementById(`opzione2-${index}-${rettangoloId}`);
+            if (checkbox.checked) {
+                selezioni.opzioni2.push(checkbox.value);
+            }
+        });
+
+        // Raccogli i valori selezionati per il terzo gruppo di checkbox
+        opzioni3.forEach((opzione, index) => {
+            const checkbox = document.getElementById(`opzione3-${index}-${rettangoloId}`);
+            if (checkbox.checked) {
+                selezioni.opzioni3.push(checkbox.value);
+            }
+        });
+
+        // Invia i dati al backend
+        try {
+            const response = await fetch("/processaAzione", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(selezioni), // Invia i dati come JSON
+            });
+
+            if (!response.ok) {
+                throw new Error(`Errore HTTP! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const urlValidi = data.urlValidi;
+
+            // Aggiorna il rettangolo con le immagini e le freccette
+            aggiornaRettangoloConImmagini(rettangolo, urlValidi);
+        } catch (error) {
+            console.error("Errore durante l'invio dei dati:", error);
+            alert("Si è verificato un errore durante l'invio dei dati.");
+        }
+    };
+
+    rettangolo.appendChild(btnAzione);
+
+    const fotoDiv = document.getElementById("foto");
+    fotoDiv.insertBefore(rettangolo, document.getElementById("iconContainer"));
+
+    if (rettangoliAggiunti === 5) {
+        const iconContainer = document.getElementById("iconContainer");
+        iconContainer.style.display = "none";
+    }
+}
+
+function aggiornaRettangoloConImmagini(rettangolo, urlValidi) {
+    // Pulisci il contenuto del riquadro dell'immagine
+    const rettangoloImmagine = rettangolo.querySelector(".rettangolo-immagine");
+    rettangoloImmagine.innerHTML = "";
+
+    // Crea un contenitore per l'immagine
+    const contenitoreImmagini = document.createElement("div");
+    contenitoreImmagini.style.position = "relative";
+    contenitoreImmagini.style.width = "100%";
+    contenitoreImmagini.style.height = "100%";
+    contenitoreImmagini.style.display = "flex";
+    contenitoreImmagini.style.alignItems = "center";
+    contenitoreImmagini.style.justifyContent = "center";
+
+    // Aggiungi l'immagine corrente
+    const immagine = document.createElement("img");
+    immagine.src = urlValidi[0]; // Mostra la prima immagine
+    immagine.alt = "Immagine";
+    immagine.style.width = "100%";
+    immagine.style.height = "100%";
+    immagine.style.objectFit = "cover"; // Adatta l'immagine al riquadro
+    immagine.style.cursor = "pointer"; // Cambia il cursore per indicare che è cliccabile
+
+    // Apri l'immagine in una nuova scheda quando viene cliccata
+    immagine.onclick = function() {
+        window.open(urlValidi[0], "_blank");
+    };
+
+    contenitoreImmagini.appendChild(immagine);
+
+    // Aggiungi le freccette per navigare tra le immagini
+    const freccettaSinistra = document.createElement("button");
+    freccettaSinistra.innerHTML = "←";
+    freccettaSinistra.style.position = "absolute";
+    freccettaSinistra.style.left = "10px"; // Posizione a sinistra del riquadro
+    freccettaSinistra.style.top = "50%";
+    freccettaSinistra.style.transform = "translateY(-50%)";
+    freccettaSinistra.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    freccettaSinistra.style.color = "white";
+    freccettaSinistra.style.border = "none";
+    freccettaSinistra.style.cursor = "pointer";
+    freccettaSinistra.style.padding = "10px";
+    freccettaSinistra.style.borderRadius = "50%";
+    freccettaSinistra.style.display = "none"; // Nascondi inizialmente la freccetta sinistra
+    freccettaSinistra.onclick = function() {
+        // Vai all'immagine precedente
+        const indiceCorrente = urlValidi.indexOf(immagine.src);
+        if (indiceCorrente > 0) {
+            immagine.src = urlValidi[indiceCorrente - 1];
+            immagine.onclick = function() {
+                window.open(urlValidi[indiceCorrente - 1], "_blank");
+            };
+            // Mostra/nascondi le freccette in base alla posizione
+            if (indiceCorrente - 1 === 0) {
+                freccettaSinistra.style.display = "none";
+            }
+            freccettaDestra.style.display = "block";
+        }
+    };
+
+    const freccettaDestra = document.createElement("button");
+    freccettaDestra.innerHTML = "→";
+    freccettaDestra.style.position = "absolute";
+    freccettaDestra.style.right = "10px"; // Posizione a destra del riquadro
+    freccettaDestra.style.top = "50%";
+    freccettaDestra.style.transform = "translateY(-50%)";
+    freccettaDestra.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    freccettaDestra.style.color = "white";
+    freccettaDestra.style.border = "none";
+    freccettaDestra.style.cursor = "pointer";
+    freccettaDestra.style.padding = "10px";
+    freccettaDestra.style.borderRadius = "50%";
+    freccettaDestra.onclick = function() {
+        // Vai all'immagine successiva
+        const indiceCorrente = urlValidi.indexOf(immagine.src);
+        if (indiceCorrente < urlValidi.length - 1) {
+            immagine.src = urlValidi[indiceCorrente + 1];
+            immagine.onclick = function() {
+                window.open(urlValidi[indiceCorrente + 1], "_blank");
+            };
+            // Mostra/nascondi le freccette in base alla posizione
+            if (indiceCorrente + 1 === urlValidi.length - 1) {
+                freccettaDestra.style.display = "none";
+            }
+            freccettaSinistra.style.display = "block";
+        }
+    };
+
+    // Mostra/nascondi le freccette in base alla posizione iniziale
+    if (urlValidi.length > 1) {
+        freccettaDestra.style.display = "block"; // Mostra la freccetta destra se ci sono più immagini
+    }
+
+    // Aggiungi le freccette al contenitore
+    contenitoreImmagini.appendChild(freccettaSinistra);
+    contenitoreImmagini.appendChild(freccettaDestra);
+
+    // Aggiungi il contenitore al riquadro dell'immagine
+    rettangoloImmagine.appendChild(contenitoreImmagini);
+}
+
+function recuperaLinksImmagini() {
+    const rettangoli = document.querySelectorAll(".rettangolo"); // Trova tutti i rettangoli
+    const linksImmagini = [];
+
+    rettangoli.forEach((rettangolo) => {
+        const immagine = rettangolo.querySelector(".rettangolo-immagine img"); // Trova l'immagine corrente
+        if (immagine && immagine.src) {
+            linksImmagini.push(immagine.src); // Aggiungi il link dell'immagine corrente
+        }
+    });
+
+    // Mostra i link raccolti (puoi fare quello che vuoi con questi link)
+    console.log("Links delle immagini correnti:", linksImmagini);
+    //alert("Links delle immagini correnti:\n" + linksImmagini.join("\n"));
+}
+
+/*function aggiungiRettangolo() {
+            if (rettangoliAggiunti >= 5) {
+                return;
+            }
+
+            rettangoliAggiunti++;
+
+            const rettangolo = document.createElement("div");
+            rettangolo.classList.add("rettangolo");
+
+            const btnElimina = document.createElement("button");
+            btnElimina.innerHTML = "-";
+            btnElimina.classList.add("btn-elimina");
+            btnElimina.onclick = function() {
+                rettangolo.remove();
+                rettangoliAggiunti--;
+                if (rettangoliAggiunti < 5) {
+                    const iconContainer = document.getElementById("iconContainer");
+                    iconContainer.style.display = "flex";
+                }
+            };
+
+            rettangolo.appendChild(btnElimina);
+
+            const rettangoloImmagine = document.createElement("div");
+            rettangoloImmagine.classList.add("rettangolo-immagine");
+            rettangolo.appendChild(rettangoloImmagine);
+
+            const immagine = document.createElement("img");
+            immagine.src = "path_to_image.jpg";
+            immagine.alt = "Immagine";
+            //immagine.style.width = "100%";
+            //immagine.style.height = "auto";
+
+           // immagine.style.width = "100px";
+            //immagine.style.height = "100px";
+            rettangoloImmagine.appendChild(immagine);
+
+            // Primo gruppo di checkbox (3 opzioni) - Posizionato in alto
+            const checkboxContainer1 = document.createElement("div");
+            checkboxContainer1.classList.add("checkbox-container");
+            checkboxContainer1.style.marginTop = "10px"; // Distanza dall'immagine
+
+            const opzioni1 = ["Mattina", "Alba/Tramonto", "Notte"];
+            opzioni1.forEach((opzione, index) => {
+                const checkboxGroup = document.createElement("div");
+                checkboxGroup.classList.add("checkbox-group");
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = `opzione1-${index}`;
+                checkbox.name = `opzione1-${index}`;
+                checkbox.value = opzione;
+
+                const label = document.createElement("label");
+                label.htmlFor = `opzione1-${index}`;
+                label.appendChild(document.createTextNode(opzione));
+
+                checkboxGroup.appendChild(checkbox);
+                checkboxGroup.appendChild(label);
+                checkboxContainer1.appendChild(checkboxGroup);
+            });
+
+            rettangolo.appendChild(checkboxContainer1);
+
+            // Secondo gruppo di checkbox (2 opzioni) - Posizionato al centro
+            const checkboxContainer2 = document.createElement("div");
+            checkboxContainer2.classList.add("checkbox-container");
+            checkboxContainer2.style.marginTop = "20px"; // Distanza dal primo gruppo
+
+            const opzioni2 = ["Persone", "No Persone"];
+            opzioni2.forEach((opzione, index) => {
+                const checkboxGroup = document.createElement("div");
+                checkboxGroup.classList.add("checkbox-group");
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = `opzione2-${index}`;
+                checkbox.name = `opzione2-${index}`;
+                checkbox.value = opzione;
+
+                const label = document.createElement("label");
+                label.htmlFor = `opzione2-${index}`;
+                label.appendChild(document.createTextNode(opzione));
+
+                checkboxGroup.appendChild(checkbox);
+                checkboxGroup.appendChild(label);
+                checkboxContainer2.appendChild(checkboxGroup);
+            });
+
+            rettangolo.appendChild(checkboxContainer2);
+
+            // Terzo gruppo di checkbox (3 opzioni) - Posizionato in basso
+            const checkboxContainer3 = document.createElement("div");
+            checkboxContainer3.classList.add("checkbox-container");
+            checkboxContainer3.style.marginTop = "20px"; // Distanza dal secondo gruppo
+            checkboxContainer3.style.marginBottom = "10px"; // Distanza dal fondo
+
+            const opzioni3 = ["Mare", "Montagna", "Città"];
+            opzioni3.forEach((opzione, index) => {
+                const checkboxGroup = document.createElement("div");
+                checkboxGroup.classList.add("checkbox-group");
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = `opzione3-${index}`;
+                checkbox.name = `opzione3-${index}`;
+                checkbox.value = opzione;
+
+                const label = document.createElement("label");
+                label.htmlFor = `opzione3-${index}`;
+                label.appendChild(document.createTextNode(opzione));
+
+                checkboxGroup.appendChild(checkbox);
+                checkboxGroup.appendChild(label);
+                checkboxContainer3.appendChild(checkboxGroup);
+            });
+            rettangolo.appendChild(checkboxContainer3);
+
+
+            // Aggiungi il pulsante sotto la terza checkbox
+            const btnAzione = document.createElement("button");
+            btnAzione.classList.add("btn-azione");
+            btnAzione.innerHTML = "Azione";
+            btnAzione.onclick = function() {
+                alert("Pulsante cliccato!");
+            };
+
+            rettangolo.appendChild(btnAzione);
+
+
+            const fotoDiv = document.getElementById("foto");
+            fotoDiv.insertBefore(rettangolo, document.getElementById("iconContainer"));
+
+            if (rettangoliAggiunti === 5) {
+                const iconContainer = document.getElementById("iconContainer");
+                iconContainer.style.display = "none";
+            }
+        }
+        */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       // Funzione per inviare richieste POST
+       async function esegui(route) {
+            const response = await fetch(route, { method: "POST" });
+            const risultato = await response.text();
+            alert(risultato);
+        }
+
+        
+
+
+
+        // Variabile globale per memorizzare il risultato
+        let risultati = [];
+
+        async function getURLs_interface() {
+            // Mostra il simbolo di caricamento
+            const loader = document.getElementById("loader");
+            const completato = document.getElementById("completato");
+            loader.style.display = "inline-block";
+            completato.style.display = "none"; // Nascondi il simbolo di completamento
+
+            // Prendi il valore della textarea
+            const luogoUtente = document.getElementById("inputArea").value;
+
+            try {
+                // Invia una richiesta POST al server con il parametro
+                const response = await fetch("/getURLs", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json", // Specifica il tipo di contenuto
+                    },
+                    body: JSON.stringify({ luogoUtente: luogoUtente }), // Invia il valore come JSON
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                // Ottieni il valore restituito dal backend
+                const data = await response.json();
+
+                // Assegna il risultato alla variabile globale
+                risultati = data;
+
+                // Usa il valore restituito
+                console.log("Risultati memorizzati:", risultati);
+
+                // (Opzionale) Mostra i risultati nella pagina
+                const outputDiv = document.getElementById("output");
+                outputDiv.innerHTML = "Risultati:<br>" + JSON.stringify(data);
+            } catch (error) {
+                console.error("Errore durante la richiesta:", error);
+            } finally {
+                // Nascondi il simbolo di caricamento e mostra il simbolo di completamento
+                loader.style.display = "none";
+                completato.style.display = "inline-block";
+            }
+        }
+
+
+
+    </script>
+
+</head>
+
+
+
+
+
+<body style="height: 100%; width: 100%; margin:0;">
+    <div id="ricerca_luogo" style="height: 7.5%; background-color: red; display: flex; align-items: center; justify-content: space-between; padding: 0 10px;">
+        <!-- Text Area a sinistra -->
+        <textarea id="inputArea" style="flex: 2; resize: none; height: 50%;"></textarea>
+
+        <!-- Radio Buttons al centro -->
+        <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
+            <label>
+                <input type="radio" name="opzione" value="Specifico"> Specifico
+            </label>
+            <label style="margin-left: 10px;">
+                <input type="radio" name="opzione" value="Generico"> Generico
+            </label>
+        </div>
+
+        <!-- Bottone a destra -->
+        <button style="flex: 0; height: 50%;" onclick="getURLs_interface()">Cerca</button>
+
+        <!-- Simbolo di caricamento -->
+        <div id="loader" class="loader"></div>
+
+        <!-- Simbolo di completamento -->
+        <div id="completato" class="completato"></div>
+    </div>
+
+
+
+
+    <div id="foto" style="height: 60%; background-color: blue; display: flex; justify-content: center; align-items: center; position: relative;">
+        <!-- Icona del cerchio con il "+" -->
+        <div id="iconContainer" onclick="aggiungiRettangolo()" style="width: 50px; height: 50px; background-color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer;">
+            <span style="font-size: 30px; font-weight: bold;">+</span>
+        </div>
+    </div>
+
+
+    
+
+    <div id="descrizione" style="height: 27.5%; background-color: black;"></div>
+
+
+
+
+
+    <div id="post_buttons" style="height: 5%; background-color: white; display: flex; justify-content: center; align-items: center;">
+        <button onclick="recuperaLinksImmagini()" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Recupera Links Immagini
+        </button>
+    </div>
+</body>
+
+
+</html>
