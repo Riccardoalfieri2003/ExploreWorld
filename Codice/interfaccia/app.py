@@ -10,6 +10,17 @@ from googleScraper.google_scraping_thread import getURLs
 
 from Models.getModelPredictions import getPredictions
 
+
+"""
+palette:
+scuro: 1F1D36
+medio scuro: 3F3351
+medio: #5C3B65
+medio chiaro: 864879
+chiaro: E9A6A6
+"""
+
+
 app = Flask(__name__)
 
 
@@ -27,9 +38,18 @@ def getURLs_interface():
     data = request.json
     luogoUtente = data.get("luogoUtente", "")  # Default a stringa vuota se non fornito
 
-    print(luogoUtente)
+    # Chiama la funzione getURLs e ottieni i tre valori
+    lista_stringhe, tupla_double, stringa = getURLs(luogoUtente, "Specifico")
 
-    return getURLs(luogoUtente,"Specifico")
+    print(tupla_double)
+    print(stringa)
+
+    # Restituisci i tre valori come un dizionario JSON
+    return jsonify({
+        "lista_stringhe": lista_stringhe,
+        "tupla_double": tupla_double,
+        "stringa": stringa
+    })
 
 
 
@@ -39,13 +59,19 @@ def processa_azione():
     # Ottieni i dati inviati dal frontend
     dati = request.json
 
+    print("Siamo qui")
+
     # Estrai i valori dei checkbox e l'array risultati
     opzioni1 = dati.get("opzioni1", [])
     opzioni2 = dati.get("opzioni2", [])
     opzioni3 = dati.get("opzioni3", [])
-    risultati = dati.get("risultati", [])
+    print("Opzioni fatte")
+    listaStringhe = dati.get("listaStringhe", [])
 
-    risultati = [
+    #print(listaStringhe)
+
+    """ 
+    listaStringhe = [
     "https://lh5.googleusercontent.com/p/AF1QipP1y1Rt6sL6iJuJKLAzn5GaQ0HDBuAKdyFm9kVC=w2030-h477-k-no",
     "https://lh5.googleusercontent.com/p/AF1QipPkC8y1ssyxvFdijmQ_1JsBZow6TLXv00Pi7U_n=w2030-h1520-k-no",
     "https://lh5.googleusercontent.com/p/AF1QipPpVFP7t-OvtjS_5UIMJ9CN1JtjupF46m8ngBEG=w2030-h454-k-no",
@@ -91,7 +117,7 @@ def processa_azione():
     "https://lh5.googleusercontent.com/p/AF1QipOEx1ZsUK9MvPhZ9y_moGfq8sddTTP5eN2d2UTo=w2030-h1172-n-k-no",
     "https://lh5.googleusercontent.com/p/AF1QipNGQYUsTj9O8J-t4D4aH3Fq1aTdeCrQzL9E3K8K=w2030-h1172-n-k-no",
     "https://lh5.googleusercontent.com/p/AF1QipOEDkx_ZS0Fr1YIpP-pp5F0nrlDPXNHJjEoW4Xj=w2030-h1172-n-k-no"
-]
+    ]"""
 
     # Stampa i dati per debug (puoi rimuoverlo in produzione)
     
@@ -101,7 +127,7 @@ def processa_azione():
     #print("Risultati:", risultati)
 
     urlValidi=[]
-    for url in risultati:
+    for url in listaStringhe:
         try:
             predictions=getPredictions(url)
 
@@ -151,6 +177,7 @@ def processa_azione():
             #print(url)
         except Exception as e: 
             print(e)
+            print("Prossima immagine")
             continue
 
     # Restituisci gli URL validi al frontend
