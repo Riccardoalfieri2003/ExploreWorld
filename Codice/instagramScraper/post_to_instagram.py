@@ -145,21 +145,19 @@ if __name__ == "__main__":
 
     try:
         # Credenziali dell'account Instagram
-        username = "provariccncesco"  # Sostituisci con il nome utente del tuo account
-        password = "FraRicc2003"  # Sostituisci con la password del tuo account
+        username = "calangeloorey"  # Sostituisci con il nome utente del tuo account
+        password = "Fraccardo2003"  # Sostituisci con la password del tuo account
 
         # Percorso dell'immagine da caricare
         image_path = [
-            r"C:\Users\Ciccio Mascolo\Desktop\Ischia.jpg",
-            r"C:\Users\Ciccio Mascolo\Desktop\Ischia2.jpg",
-            r"C:\Users\Ciccio Mascolo\Desktop\Ischia3.jpg"
+            r"C:\Users\Francesco\Desktop\foto1.jpg"
             ]# Percorso dell'immagine
 
 
         # Descrizione del post
-        description = "Panorama di ischia"  # Testo della descrizione
+        description = "Didascalia del Post"  # Testo della descrizione
 
-        location = "Ischia";
+        location = "New York";
 
         # Esegue il login e pubblica il post
         login_to_instagram(driver, username, password)
@@ -170,4 +168,3 @@ if __name__ == "__main__":
         print(f"Errore: {e}")  # Mostra eventuali errori
     finally:
         driver.quit()  # Chiude il browser anche in caso di errori
-
