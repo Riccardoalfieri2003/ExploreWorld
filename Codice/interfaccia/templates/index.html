@@ -615,7 +615,29 @@ function aggiornaRettangoloConImmagini(rettangolo, urlValidi) {
 
 
 
+async function predictLike() {
+    const descrizione = document.getElementById("Descrizione").value;
 
+    try {
+        const response = await fetch("/predictLike", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ descrizione }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Errore HTTP! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Risultati:", data);
+        alert("Risultati: " + JSON.stringify(data));
+    } catch (error) {
+        console.error("Errore durante la richiesta:", error);
+    }
+}
 
 
 
@@ -667,7 +689,25 @@ function aggiornaRettangoloConImmagini(rettangolo, urlValidi) {
 
     
 
-    <div id="descrizione" style="height: 30%; background-color: #1F1D36;"></div>
+ <div id="descrizione" style="height: 30%; background-color: #1F1D36; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+
+<!-- TextArea per "Aggiungi Descrizione" -->
+<div>
+    <label for="Descrizione" style="color: white;">Aggiungi Descrizione</label>
+    <textarea id="Descrizione" placeholder="Scrivi qui la descrizione..." style="width: 100%; height: 60px; border: 1px solid #ccc; border-radius: 5px; padding: 10px; resize: none; margin-top: 5px;"></textarea>
+</div>
+            <div style="margin-left: 10px;">
+                <label for="numeroFollower" style="color: white;">Numero di Follower</label>
+                <input type="number" id="inputArea" name="numeroFollower" style="width: 130px; margin-top: 5px;">
+            </div>
+        </div>
+
+<!-- Pulsante "Predict Like" -->
+<button onclick="predictLike()" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+    Predict Like
+</button>
+    </div>
+
 
 
 
