@@ -52,7 +52,73 @@ def getURLs_interface():
     })
 
 
+# Funzioni di analisi del testo
+def count_words(text):
+    return len(text.split()) if text else 0
 
+def count_emoticons(text):
+    return sum(1 for char in text if char in emoji.EMOJI_DATA) if text else 0
+
+def count_mentions(text):
+    mention_pattern = r'(?<!\S)@(\w+)(?!\.\w)'
+    return len(re.findall(mention_pattern, text)) if text else 0
+
+def count_hashtags(text):
+    hashtag_pattern = r'#\w+'
+    return len(re.findall(hashtag_pattern, text)) if text else 0
+
+
+# Funzione per contare quante volte il luogo è menzionato nella descrizione
+def count_location_occurrences(descrizione,luogo):
+    #luogo = row['Luogo'].lower()  # Nome del luogo in minuscolo
+    #descrizione = row['Descrizione'].lower()  # Descrizione in minuscolo
+
+    # Rimuove caratteri di separazione come virgole, punti, ecc.
+    luogo_pulito = re.sub(r'[^\w\s]', '', luogo)  # Mantiene solo lettere e spazi
+    luogo_parole = luogo_pulito.split()  # Divide in parole singole
+
+    # Conta le occorrenze sovrapposte del nome completo del luogo
+    #luogo_count = len(re.findall(f"(?={re.escape(luogo_pulito)})", descrizione))
+
+    luogo_count = 0
+    # Conta le occorrenze di ciascuna parola significativa del luogo
+    for parola in luogo_parole:
+        # Ignora parole troppo generiche come "new", "city", ecc.
+        if len(parola) > 2:  # Solo parole con più di 2 lettere
+            # Conta le occorrenze sovrapposte della parola isolata
+            luogo_count += len(re.findall(f"(?={re.escape(parola)})", descrizione))
+
+    return luogo_count
+
+
+@app.route("/predictLike", methods=["POST"])
+def predict_like():
+    data = request.json
+    descrizione = data.get("descrizione", "")
+
+    wordCount = count_words(descrizione)
+    emoticonCount = count_emoticons(descrizione)
+    mentionsCount = count_mentions(descrizione)
+    hashtagCount = count_hashtags(descrizione)
+    OccCount = count_location_occurrences(descrizione,"Cicciano")
+
+
+
+    new_data = {
+        'Followers': 46500,
+        'NumImmagini': 3,
+        'Numero di Parole':  wordCount,
+        'Numero di Emoticon': emoticonCount,
+        'Numero di Menzioni': mentionsCount,
+        'Numero di Hashtag': hashtagCount,
+        'Associazione a luogo': True,
+        'Occorrenze del Luogo': OccCount
+    }
+    print(new_data)
+
+    predicted_likes = predictLikes(new_data)
+
+    return jsonify(predicted_likes)
 
 @app.route("/processaAzione", methods=["POST"])
 def processa_azione():
