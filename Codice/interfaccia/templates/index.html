@@ -615,8 +615,23 @@ function aggiornaRettangoloConImmagini(rettangolo, urlValidi) {
 
 
 
+
 async function predictLike() {
     const descrizione = document.getElementById("Descrizione").value;
+
+    const rettangoli = document.querySelectorAll(".rettangolo"); // Trova tutti i rettangoli
+    const linksImmagini = [];
+
+    const numeroFollower = document.getElementsByName("numeroFollower")[0]?.value || 0;
+
+    rettangoli.forEach((rettangolo) => {
+        const immagine = rettangolo.querySelector(".rettangolo-immagine img"); // Trova l'immagine corrente
+        if (immagine && immagine.src) {
+            linksImmagini.push(immagine.src); // Aggiungi il link dell'immagine corrente
+        }
+    });
+
+    const numImmagini = linksImmagini.length; // Calcola la lunghezza dell'array
 
     try {
         const response = await fetch("/predictLike", {
@@ -624,7 +639,7 @@ async function predictLike() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ descrizione }),
+            body: JSON.stringify({ descrizione, numImmagini, numeroFollower, stringa }),
         });
 
         if (!response.ok) {
@@ -638,7 +653,6 @@ async function predictLike() {
         console.error("Errore durante la richiesta:", error);
     }
 }
-
 
 
 
