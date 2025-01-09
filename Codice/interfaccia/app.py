@@ -70,15 +70,12 @@ def count_hashtags(text):
 
 # Funzione per contare quante volte il luogo è menzionato nella descrizione
 def count_location_occurrences(descrizione,luogo):
-    #luogo = row['Luogo'].lower()  # Nome del luogo in minuscolo
-    #descrizione = row['Descrizione'].lower()  # Descrizione in minuscolo
+    descrizione=descrizione.lower()
+    luogo=luogo.lower()
 
     # Rimuove caratteri di separazione come virgole, punti, ecc.
     luogo_pulito = re.sub(r'[^\w\s]', '', luogo)  # Mantiene solo lettere e spazi
     luogo_parole = luogo_pulito.split()  # Divide in parole singole
-
-    # Conta le occorrenze sovrapposte del nome completo del luogo
-    #luogo_count = len(re.findall(f"(?={re.escape(luogo_pulito)})", descrizione))
 
     luogo_count = 0
     # Conta le occorrenze di ciascuna parola significativa del luogo
@@ -93,20 +90,25 @@ def count_location_occurrences(descrizione,luogo):
 
 @app.route("/predictLike", methods=["POST"])
 def predict_like():
+    print("Siamoa a predict")
+
     data = request.json
     descrizione = data.get("descrizione", "")
+    num_immagini = data.get('numImmagini')
+    luogo = data.get('stringa')
+    num_follower = int(data.get('numeroFollower'))
 
     wordCount = count_words(descrizione)
     emoticonCount = count_emoticons(descrizione)
     mentionsCount = count_mentions(descrizione)
     hashtagCount = count_hashtags(descrizione)
-    OccCount = count_location_occurrences(descrizione,"Cicciano")
+    OccCount = count_location_occurrences(descrizione,luogo)
 
 
 
     new_data = {
-        'Followers': 46500,
-        'NumImmagini': 3,
+        'Followers': num_follower,
+        'NumImmagini': num_immagini,
         'Numero di Parole':  wordCount,
         'Numero di Emoticon': emoticonCount,
         'Numero di Menzioni': mentionsCount,
@@ -117,8 +119,13 @@ def predict_like():
     print(new_data)
 
     predicted_likes = predictLikes(new_data)
+    print("Like predetti ",predicted_likes)
 
     return jsonify(predicted_likes)
+
+
+
+
 
 @app.route("/processaAzione", methods=["POST"])
 def processa_azione():
