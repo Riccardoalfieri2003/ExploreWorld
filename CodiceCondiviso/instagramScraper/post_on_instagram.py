@@ -137,6 +137,23 @@ def upload_post(driver, image_path, description, location):
     button.click()
     time.sleep(20)  # Attende il completamento della pubblicazione
 
+def post(image_path,description,luogo):
+    try:
+        username = "calangeloorey"  # Sostituisci con il nome utente del tuo account
+        password = "Fraccardo2003"  # Sostituisci con la password del tuo account
+
+        driver  = createDriver()
+
+        # Esegue il login e pubblica il post
+        login_to_instagram(driver, username, password)
+        upload_post(driver, image_path, description, luogo)
+        print("Post pubblicato con successo!")
+    except Exception as e:
+        print("Si é verificato un errore")
+        print(e)
+
+    return
+"""
 if __name__ == "__main__":
     # Percorso del driver di Chrome
     #chrome_driver_path = r'C:\Users\Ciccio Mascolo\Desktop\chromedriver-win64\chromedriver.exe'
@@ -179,3 +196,4 @@ if __name__ == "__main__":
         print(f"Errore: {e}")  # Mostra eventuali errori
     finally:
         driver.quit()  # Chiude il browser anche in caso di errori
+"""

@@ -14,7 +14,6 @@ sys.path.append(instagram_scraper_path)
 
 from googleScraper.google_scraping_thread import getURLs
 from Models.LikeModel.regressione import predictLikes
-
 from Models.getModelPredictions import getPredictions
 
 
