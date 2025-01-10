@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_50489811754f39725bdd61d1c7903712 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_50489811754f39725bdd61d1c7903712" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_50489811754f39725bdd61d1c7903712 = L.map(
+                "map_50489811754f39725bdd61d1c7903712",
+                {
+                    center: [48.858844, 2.294351],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 3,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_0808edc1b0bd9ff53395ff75cab9a7a9 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_0808edc1b0bd9ff53395ff75cab9a7a9.addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+            var circle_marker_5f963598552e300e69607e0880a89c01 = L.circleMarker(
+                [48.858844, 2.294351],
+                {"bubblingMouseEvents": true, "color": "#FF0000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF0000", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 3}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+        var popup_d2ecde03337aed33910ece0eeb87d43d = L.popup({"maxWidth": 300});
+
+        
+            
+                var html_fbd60ac7bb94f653091aaf411759e96b = $(`<div id="html_fbd60ac7bb94f653091aaf411759e96b" style="width: 100.0%; height: 100.0%;">         <div style="text-align:center;">             <h4>Luogo: 0</h4>             <img src="https://via.placeholder.com/100" alt="Sample Image" style="width:150px;height:auto;">             <p><a href="https://example.com" target="_blank">More Info</a></p>         </div>     </div>`)[0];
+                popup_d2ecde03337aed33910ece0eeb87d43d.setContent(html_fbd60ac7bb94f653091aaf411759e96b);
+            
+        
+
+        circle_marker_5f963598552e300e69607e0880a89c01.bindPopup(popup_d2ecde03337aed33910ece0eeb87d43d)
+        ;
+
+        
+    
+    
+            var circle_marker_ebf98cc88c637e66eff95de3bbad2bc7 = L.circleMarker(
+                [48.858093, 2.294694],
+                {"bubblingMouseEvents": true, "color": "#FF0000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF0000", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 3}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+        var popup_7b3722040d2310ac048ad2b0448995f0 = L.popup({"maxWidth": 300});
+
+        
+            
+                var html_ffd3fb48eaec5148b98e9417cd21fc54 = $(`<div id="html_ffd3fb48eaec5148b98e9417cd21fc54" style="width: 100.0%; height: 100.0%;">         <div style="text-align:center;">             <h4>Luogo: 0</h4>             <img src="https://via.placeholder.com/100" alt="Sample Image" style="width:150px;height:auto;">             <p><a href="https://example.com" target="_blank">More Info</a></p>         </div>     </div>`)[0];
+                popup_7b3722040d2310ac048ad2b0448995f0.setContent(html_ffd3fb48eaec5148b98e9417cd21fc54);
+            
+        
+
+        circle_marker_ebf98cc88c637e66eff95de3bbad2bc7.bindPopup(popup_7b3722040d2310ac048ad2b0448995f0)
+        ;
+
+        
+    
+    
+            var circle_marker_87d09a908d76e33b6c12c509701f2884 = L.circleMarker(
+                [40.689247, -74.044502],
+                {"bubblingMouseEvents": true, "color": "#00FF00", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00FF00", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 3}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+        var popup_1aac47c05fa7710babacbcc16476fd27 = L.popup({"maxWidth": 300});
+
+        
+            
+                var html_badea945a1e5fbe3af99fc9b4470ffdb = $(`<div id="html_badea945a1e5fbe3af99fc9b4470ffdb" style="width: 100.0%; height: 100.0%;">         <div style="text-align:center;">             <h4>Luogo: 1</h4>             <img src="https://via.placeholder.com/100" alt="Sample Image" style="width:150px;height:auto;">             <p><a href="https://example.com" target="_blank">More Info</a></p>         </div>     </div>`)[0];
+                popup_1aac47c05fa7710babacbcc16476fd27.setContent(html_badea945a1e5fbe3af99fc9b4470ffdb);
+            
+        
+
+        circle_marker_87d09a908d76e33b6c12c509701f2884.bindPopup(popup_1aac47c05fa7710babacbcc16476fd27)
+        ;
+
+        
+    
+    
+            var circle_marker_3efaf57dbd8686553567efd6ea4ea75d = L.circleMarker(
+                [40.68945, -74.0452],
+                {"bubblingMouseEvents": true, "color": "#00FF00", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00FF00", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 3}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+        var popup_bdf0ebed549188e251ea98a94ae8cfce = L.popup({"maxWidth": 300});
+
+        
+            
+                var html_6eb7e83688d168846f8a90dc7e25d7bc = $(`<div id="html_6eb7e83688d168846f8a90dc7e25d7bc" style="width: 100.0%; height: 100.0%;">         <div style="text-align:center;">             <h4>Luogo: 1</h4>             <img src="https://via.placeholder.com/100" alt="Sample Image" style="width:150px;height:auto;">             <p><a href="https://example.com" target="_blank">More Info</a></p>         </div>     </div>`)[0];
+                popup_bdf0ebed549188e251ea98a94ae8cfce.setContent(html_6eb7e83688d168846f8a90dc7e25d7bc);
+            
+        
+
+        circle_marker_3efaf57dbd8686553567efd6ea4ea75d.bindPopup(popup_bdf0ebed549188e251ea98a94ae8cfce)
+        ;
+
+        
+    
+    
+            var circle_marker_7718814d5fe477c6fc54b92ab0152edb = L.circleMarker(
+                [51.500729, -0.124625],
+                {"bubblingMouseEvents": true, "color": "#0000FF", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#0000FF", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 3}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+        var popup_9ecd0c64e7abd303d90dd969ebfd1e42 = L.popup({"maxWidth": 300});
+
+        
+            
+                var html_e89cd49742ee41a83ded28e69522173b = $(`<div id="html_e89cd49742ee41a83ded28e69522173b" style="width: 100.0%; height: 100.0%;">         <div style="text-align:center;">             <h4>Luogo: 2</h4>             <img src="https://via.placeholder.com/100" alt="Sample Image" style="width:150px;height:auto;">             <p><a href="https://example.com" target="_blank">More Info</a></p>         </div>     </div>`)[0];
+                popup_9ecd0c64e7abd303d90dd969ebfd1e42.setContent(html_e89cd49742ee41a83ded28e69522173b);
+            
+        
+
+        circle_marker_7718814d5fe477c6fc54b92ab0152edb.bindPopup(popup_9ecd0c64e7abd303d90dd969ebfd1e42)
+        ;
+
+        
+    
+    
+            var circle_marker_7e2169ad6097fd427fa70e938314d893 = L.circleMarker(
+                [51.7504622, -1.2887872],
+                {"bubblingMouseEvents": true, "color": "#0000FF", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#0000FF", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 3}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+        var popup_9598529acf1ab4596245903fd08565cf = L.popup({"maxWidth": 300});
+
+        
+            
+                var html_1bfbb0e5995abd876aef2d81771133a4 = $(`<div id="html_1bfbb0e5995abd876aef2d81771133a4" style="width: 100.0%; height: 100.0%;">         <div style="text-align:center;">             <h4>Luogo: 2</h4>             <img src="https://via.placeholder.com/100" alt="Sample Image" style="width:150px;height:auto;">             <p><a href="https://example.com" target="_blank">More Info</a></p>         </div>     </div>`)[0];
+                popup_9598529acf1ab4596245903fd08565cf.setContent(html_1bfbb0e5995abd876aef2d81771133a4);
+            
+        
+
+        circle_marker_7e2169ad6097fd427fa70e938314d893.bindPopup(popup_9598529acf1ab4596245903fd08565cf)
+        ;
+
+        
+    
+    
+            var circle_marker_ec18fcf6994cb573bdbbb3e3287a2a40 = L.circleMarker(
+                [40.9623301, 14.5379536],
+                {"bubblingMouseEvents": true, "color": "#FFFF00", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 3}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+        var popup_7ff618354db222b812755b9e5a0e54a4 = L.popup({"maxWidth": 300});
+
+        
+            
+                var html_8e4deb6dc4dd41d2bd932d15ef2d9b19 = $(`<div id="html_8e4deb6dc4dd41d2bd932d15ef2d9b19" style="width: 100.0%; height: 100.0%;">         <div style="text-align:center;">             <h4>Luogo: 3</h4>             <img src="https://via.placeholder.com/100" alt="Sample Image" style="width:150px;height:auto;">             <p><a href="https://example.com" target="_blank">More Info</a></p>         </div>     </div>`)[0];
+                popup_7ff618354db222b812755b9e5a0e54a4.setContent(html_8e4deb6dc4dd41d2bd932d15ef2d9b19);
+            
+        
+
+        circle_marker_ec18fcf6994cb573bdbbb3e3287a2a40.bindPopup(popup_7ff618354db222b812755b9e5a0e54a4)
+        ;
+
+        
+    
+    
+            var poly_line_b80a84336e4085b07ecfc40a817b1247 = L.polyline(
+                [[48.858844, 2.294351], [48.858093, 2.294694]],
+                {"bubblingMouseEvents": true, "color": "#FF0000", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#FF0000", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+            var poly_line_eb8bcc9607110c30e16ed233bee14e09 = L.polyline(
+                [[40.689247, -74.044502], [40.68945, -74.0452]],
+                {"bubblingMouseEvents": true, "color": "#00FF00", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#00FF00", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+    
+            var poly_line_62deae43ea098c3a0aaba622d26f302b = L.polyline(
+                [[51.500729, -0.124625], [51.7504622, -1.2887872]],
+                {"bubblingMouseEvents": true, "color": "#0000FF", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#0000FF", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_50489811754f39725bdd61d1c7903712);
+        
+</script>
+</html>

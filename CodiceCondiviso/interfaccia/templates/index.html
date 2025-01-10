@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%; width: 100%;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>ExploreWorld</title>
+
+    
+
+
+
+
+
+
+    <script>
+
+
+let rettangoliAggiunti = 0;
+
+
+let listaStringhe = ""; // Lista di link
+                let tuplaDouble;  // coordinate
+                let stringa = "";             // luogo
+
+function aggiungiRettangolo() {
+    if (rettangoliAggiunti >= 5) {
+        return;
+    }
+
+    rettangoliAggiunti++;
+
+    const rettangolo = document.createElement("div");
+    rettangolo.classList.add("rettangolo");
+    rettangolo.setAttribute("data-id", rettangoliAggiunti); // Aggiungi un identificatore unico
+
+    const btnElimina = document.createElement("button");
+    btnElimina.innerHTML = "-";
+    btnElimina.classList.add("btn-elimina");
+    btnElimina.onclick = function() {
+        rettangolo.remove();
+        rettangoliAggiunti--;
+        if (rettangoliAggiunti < 5) {
+            const iconContainer = document.getElementById("iconContainer");
+            iconContainer.style.display = "flex";
+        }
+    };
+
+    rettangolo.appendChild(btnElimina);
+
+    const rettangoloImmagine = document.createElement("div");
+    rettangoloImmagine.classList.add("rettangolo-immagine");
+    rettangolo.appendChild(rettangoloImmagine);
+
+    const immagine = document.createElement("img");
+    immagine.src = "/static/img_placeholder.png"; // Immagine di default
+    immagine.alt = "Placeholder";
+    immagine.style.width = "100px";
+    immagine.style.height = "100px";
+    immagine.style.borderRadius="5px";
+    immagine.style.objectFit = "cover"; // Mantiene le proporzioni e copre il contenitore
+    rettangoloImmagine.appendChild(immagine);
+
+    // Primo gruppo di checkbox (3 opzioni) - Posizionato in alto
+    const checkboxContainer1 = document.createElement("div");
+    checkboxContainer1.classList.add("checkbox-container");
+    checkboxContainer1.style.marginTop = "10px";
+
+
+    const opzioni1 = ["Mattina", "Alba/Tramonto", "Notte"];
+    opzioni1.forEach((opzione, index) => {
+        const checkboxGroup = document.createElement("div");
+        checkboxGroup.classList.add("checkbox-group");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `opzione1-${index}-${rettangoliAggiunti}`;
+        checkbox.name = `opzione1-${index}-${rettangoliAggiunti}`;
+        checkbox.value = opzione;
+
+        const label = document.createElement("label");
+        label.htmlFor = `opzione1-${index}-${rettangoliAggiunti}`;
+        label.appendChild(document.createTextNode(opzione));
+
+        checkboxGroup.appendChild(checkbox);
+        checkboxGroup.appendChild(label);
+        checkboxContainer1.appendChild(checkboxGroup);
+    });
+
+    rettangolo.appendChild(checkboxContainer1);
+
+    // Secondo gruppo di checkbox (2 opzioni) - Posizionato al centro
+    const checkboxContainer2 = document.createElement("div");
+    checkboxContainer2.classList.add("checkbox-container");
+    checkboxContainer2.style.marginTop = "20px";
+
+    const opzioni2 = ["Persone", "No Persone"];
+    opzioni2.forEach((opzione, index) => {
+        const checkboxGroup = document.createElement("div");
+        checkboxGroup.classList.add("checkbox-group");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `opzione2-${index}-${rettangoliAggiunti}`;
+        checkbox.name = `opzione2-${index}-${rettangoliAggiunti}`;
+        checkbox.value = opzione;
+
+        const label = document.createElement("label");
+        label.htmlFor = `opzione2-${index}-${rettangoliAggiunti}`;
+        label.appendChild(document.createTextNode(opzione));
+
+        checkboxGroup.appendChild(checkbox);
+        checkboxGroup.appendChild(label);
+        checkboxContainer2.appendChild(checkboxGroup);
+    });
+
+    rettangolo.appendChild(checkboxContainer2);
+
+    // Terzo gruppo di checkbox (3 opzioni) - Posizionato in basso
+    const checkboxContainer3 = document.createElement("div");
+    checkboxContainer3.classList.add("checkbox-container");
+    checkboxContainer3.style.marginTop = "20px";
+    checkboxContainer3.style.marginBottom = "10px";
+
+    const opzioni3 = ["Mare", "Montagna", "Città"];
+    opzioni3.forEach((opzione, index) => {
+        const checkboxGroup = document.createElement("div");
+        checkboxGroup.classList.add("checkbox-group");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `opzione3-${index}-${rettangoliAggiunti}`;
+        checkbox.name = `opzione3-${index}-${rettangoliAggiunti}`;
+        checkbox.value = opzione;
+
+        const label = document.createElement("label");
+        label.htmlFor = `opzione3-${index}-${rettangoliAggiunti}`;
+        label.appendChild(document.createTextNode(opzione));
+
+        checkboxGroup.appendChild(checkbox);
+        checkboxGroup.appendChild(label);
+        checkboxContainer3.appendChild(checkboxGroup);
+    });
+    rettangolo.appendChild(checkboxContainer3);
+
+    // Aggiungi il pulsante "Azione"
+    const btnAzione = document.createElement("button");
+    btnAzione.classList.add("btn-azione");
+    btnAzione.innerHTML = "Ricerca";
+    
+    btnAzione.onclick = async function() {
+
+        console.log("Siamo qui")
+        console.log(listaStringhe)
+
+        const rettangoloId = rettangolo.getAttribute("data-id"); // Ottieni l'ID del rettangolo corrente
+        const selezioni = {
+            opzioni1: [],
+            opzioni2: [],
+            opzioni3: [],
+            listaStringhe: listaStringhe // Includi l'array risultati
+        };
+
+        // Raccogli i valori selezionati per il primo gruppo di checkbox
+        opzioni1.forEach((opzione, index) => {
+            const checkbox = document.getElementById(`opzione1-${index}-${rettangoloId}`);
+            if (checkbox.checked) {
+                selezioni.opzioni1.push(checkbox.value);
+            }
+        });
+
+        // Raccogli i valori selezionati per il secondo gruppo di checkbox
+        opzioni2.forEach((opzione, index) => {
+            const checkbox = document.getElementById(`opzione2-${index}-${rettangoloId}`);
+            if (checkbox.checked) {
+                selezioni.opzioni2.push(checkbox.value);
+            }
+        });
+
+        // Raccogli i valori selezionati per il terzo gruppo di checkbox
+        opzioni3.forEach((opzione, index) => {
+            const checkbox = document.getElementById(`opzione3-${index}-${rettangoloId}`);
+            if (checkbox.checked) {
+                selezioni.opzioni3.push(checkbox.value);
+            }
+        });
+
+        // Invia i dati al backend
+        try {
+            const response = await fetch("/processaAzione", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(selezioni), // Invia i dati come JSON
+            });
+
+            if (!response.ok) {
+                throw new Error(`Errore HTTP! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const urlValidi = data.urlValidi;
+
+            // Aggiorna il rettangolo con le immagini e le freccette
+            aggiornaRettangoloConImmagini(rettangolo, urlValidi);
+        } catch (error) {
+            console.error("Errore durante l'invio dei dati:", error);
+            alert("Si è verificato un errore durante l'invio dei dati.");
+        }
+    };
+
+    rettangolo.appendChild(btnAzione);
+
+    const fotoDiv = document.getElementById("foto");
+    fotoDiv.insertBefore(rettangolo, document.getElementById("iconContainer"));
+
+    if (rettangoliAggiunti === 5) {
+        const iconContainer = document.getElementById("iconContainer");
+        iconContainer.style.display = "none";
+    }
+}
+
+function aggiornaRettangoloConImmagini(rettangolo, urlValidi) {
+    // Pulisci il contenuto del riquadro dell'immagine
+    const rettangoloImmagine = rettangolo.querySelector(".rettangolo-immagine");
+    rettangoloImmagine.innerHTML = "";
+
+    // Crea un contenitore per l'immagine
+    const contenitoreImmagini = document.createElement("div");
+    contenitoreImmagini.style.position = "relative";
+    contenitoreImmagini.style.width = "100%";
+    contenitoreImmagini.style.height = "100%";
+    contenitoreImmagini.style.display = "flex";
+    contenitoreImmagini.style.alignItems = "center";
+    contenitoreImmagini.style.justifyContent = "center";
+
+    // Aggiungi l'immagine corrente
+    const immagine = document.createElement("img");
+    immagine.src = urlValidi[0]; // Mostra la prima immagine
+    immagine.alt = "No immagini valide trovate";
+    immagine.style.width = "100px";
+    immagine.style.height = "100px";
+    immagine.style.objectFit = "cover"; // Adatta l'immagine al riquadro
+    immagine.style.cursor = "pointer"; // Cambia il cursore per indicare che è cliccabile
+
+    // Apri l'immagine in una nuova scheda quando viene cliccata
+    immagine.onclick = function() {
+        window.open(urlValidi[0], "_blank");
+    };
+
+    contenitoreImmagini.appendChild(immagine);
+
+    // Aggiungi le freccette per navigare tra le immagini
+    const freccettaSinistra = document.createElement("button");
+    freccettaSinistra.innerHTML = "←";
+    freccettaSinistra.style.position = "absolute";
+    freccettaSinistra.style.left = "10px"; // Posizione a sinistra del riquadro
+    freccettaSinistra.style.top = "50%";
+    freccettaSinistra.style.transform = "translateY(-50%)";
+    freccettaSinistra.style.backgroundColor = "#E9A6A6";
+    freccettaSinistra.style.color = "white";
+    freccettaSinistra.style.border = "none";
+    freccettaSinistra.style.cursor = "pointer";
+    freccettaSinistra.style.padding = "10px";
+    freccettaSinistra.style.borderRadius = "100%";
+    freccettaSinistra.style.display = "none"; // Nascondi inizialmente la freccetta sinistra
+    freccettaSinistra.onclick = function() {
+        // Vai all'immagine precedente
+        const indiceCorrente = urlValidi.indexOf(immagine.src);
+        if (indiceCorrente > 0) {
+            immagine.src = urlValidi[indiceCorrente - 1];
+            immagine.onclick = function() {
+                window.open(urlValidi[indiceCorrente - 1], "_blank");
+            };
+            // Mostra/nascondi le freccette in base alla posizione
+            if (indiceCorrente - 1 === 0) {
+                freccettaSinistra.style.display = "none";
+            }
+            freccettaDestra.style.display = "block";
+        }
+    };
+
+    const freccettaDestra = document.createElement("button");
+    freccettaDestra.innerHTML = "→";
+    freccettaDestra.style.position = "absolute";
+    freccettaDestra.style.right = "10px"; // Posizione a destra del riquadro
+    freccettaDestra.style.top = "50%";
+    freccettaDestra.style.transform = "translateY(-50%)";
+    freccettaDestra.style.backgroundColor = "#E9A6A6";
+    freccettaDestra.style.color = "white";
+    freccettaDestra.style.border = "none";
+    freccettaDestra.style.cursor = "pointer";
+    freccettaDestra.style.padding = "10px";
+    freccettaDestra.style.borderRadius = "100%";
+    freccettaDestra.onclick = function() {
+        // Vai all'immagine successiva
+        const indiceCorrente = urlValidi.indexOf(immagine.src);
+        if (indiceCorrente < urlValidi.length - 1) {
+            immagine.src = urlValidi[indiceCorrente + 1];
+            immagine.onclick = function() {
+                window.open(urlValidi[indiceCorrente + 1], "_blank");
+            };
+            // Mostra/nascondi le freccette in base alla posizione
+            if (indiceCorrente + 1 === urlValidi.length - 1) {
+                freccettaDestra.style.display = "none";
+            }
+            freccettaSinistra.style.display = "block";
+        }
+    };
+
+    // Mostra/nascondi le freccette in base alla posizione iniziale
+    if (urlValidi.length > 1) {
+        freccettaDestra.style.display = "block"; // Mostra la freccetta destra se ci sono più immagini
+    }
+
+    // Aggiungi le freccette al contenitore
+    contenitoreImmagini.appendChild(freccettaSinistra);
+    contenitoreImmagini.appendChild(freccettaDestra);
+
+    // Aggiungi il contenitore al riquadro dell'immagine
+    rettangoloImmagine.appendChild(contenitoreImmagini);
+}
+
+
+
+/*function aggiungiRettangolo() {
+            if (rettangoliAggiunti >= 5) {
+                return;
+            }
+
+            rettangoliAggiunti++;
+
+            const rettangolo = document.createElement("div");
+            rettangolo.classList.add("rettangolo");
+
+            const btnElimina = document.createElement("button");
+            btnElimina.innerHTML = "-";
+            btnElimina.classList.add("btn-elimina");
+            btnElimina.onclick = function() {
+                rettangolo.remove();
+                rettangoliAggiunti--;
+                if (rettangoliAggiunti < 5) {
+                    const iconContainer = document.getElementById("iconContainer");
+                    iconContainer.style.display = "flex";
+                }
+            };
+
+            rettangolo.appendChild(btnElimina);
+
+            const rettangoloImmagine = document.createElement("div");
+            rettangoloImmagine.classList.add("rettangolo-immagine");
+            rettangolo.appendChild(rettangoloImmagine);
+
+            const immagine = document.createElement("img");
+            immagine.src = "path_to_image.jpg";
+            immagine.alt = "Immagine";
+            //immagine.style.width = "100%";
+            //immagine.style.height = "auto";
+
+           // immagine.style.width = "100px";
+            //immagine.style.height = "100px";
+            rettangoloImmagine.appendChild(immagine);
+
+            // Primo gruppo di checkbox (3 opzioni) - Posizionato in alto
+            const checkboxContainer1 = document.createElement("div");
+            checkboxContainer1.classList.add("checkbox-container");
+            checkboxContainer1.style.marginTop = "10px"; // Distanza dall'immagine
+
+            const opzioni1 = ["Mattina", "Alba/Tramonto", "Notte"];
+            opzioni1.forEach((opzione, index) => {
+                const checkboxGroup = document.createElement("div");
+                checkboxGroup.classList.add("checkbox-group");
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = `opzione1-${index}`;
+                checkbox.name = `opzione1-${index}`;
+                checkbox.value = opzione;
+
+                const label = document.createElement("label");
+                label.htmlFor = `opzione1-${index}`;
+                label.appendChild(document.createTextNode(opzione));
+
+                checkboxGroup.appendChild(checkbox);
+                checkboxGroup.appendChild(label);
+                checkboxContainer1.appendChild(checkboxGroup);
+            });
+
+            rettangolo.appendChild(checkboxContainer1);
+
+            // Secondo gruppo di checkbox (2 opzioni) - Posizionato al centro
+            const checkboxContainer2 = document.createElement("div");
+            checkboxContainer2.classList.add("checkbox-container");
+            checkboxContainer2.style.marginTop = "20px"; // Distanza dal primo gruppo
+
+            const opzioni2 = ["Persone", "No Persone"];
+            opzioni2.forEach((opzione, index) => {
+                const checkboxGroup = document.createElement("div");
+                checkboxGroup.classList.add("checkbox-group");
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = `opzione2-${index}`;
+                checkbox.name = `opzione2-${index}`;
+                checkbox.value = opzione;
+
+                const label = document.createElement("label");
+                label.htmlFor = `opzione2-${index}`;
+                label.appendChild(document.createTextNode(opzione));
+
+                checkboxGroup.appendChild(checkbox);
+                checkboxGroup.appendChild(label);
+                checkboxContainer2.appendChild(checkboxGroup);
+            });
+
+            rettangolo.appendChild(checkboxContainer2);
+
+            // Terzo gruppo di checkbox (3 opzioni) - Posizionato in basso
+            const checkboxContainer3 = document.createElement("div");
+            checkboxContainer3.classList.add("checkbox-container");
+            checkboxContainer3.style.marginTop = "20px"; // Distanza dal secondo gruppo
+            checkboxContainer3.style.marginBottom = "10px"; // Distanza dal fondo
+
+            const opzioni3 = ["Mare", "Montagna", "Città"];
+            opzioni3.forEach((opzione, index) => {
+                const checkboxGroup = document.createElement("div");
+                checkboxGroup.classList.add("checkbox-group");
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = `opzione3-${index}`;
+                checkbox.name = `opzione3-${index}`;
+                checkbox.value = opzione;
+
+                const label = document.createElement("label");
+                label.htmlFor = `opzione3-${index}`;
+                label.appendChild(document.createTextNode(opzione));
+
+                checkboxGroup.appendChild(checkbox);
+                checkboxGroup.appendChild(label);
+                checkboxContainer3.appendChild(checkboxGroup);
+            });
+            rettangolo.appendChild(checkboxContainer3);
+
+
+            // Aggiungi il pulsante sotto la terza checkbox
+            const btnAzione = document.createElement("button");
+            btnAzione.classList.add("btn-azione");
+            btnAzione.innerHTML = "Azione";
+            btnAzione.onclick = function() {
+                alert("Pulsante cliccato!");
+            };
+
+            rettangolo.appendChild(btnAzione);
+
+
+            const fotoDiv = document.getElementById("foto");
+            fotoDiv.insertBefore(rettangolo, document.getElementById("iconContainer"));
+
+            if (rettangoliAggiunti === 5) {
+                const iconContainer = document.getElementById("iconContainer");
+                iconContainer.style.display = "none";
+            }
+        }
+        */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+        // Variabile globale per memorizzare il risultato
+        let risultati = [];
+
+        async function getURLs_interface() {
+            // Mostra il simbolo di caricamento
+            /*
+            const loader = document.getElementById("loader");
+            const completato = document.getElementById("completato");
+            loader.style.display = "inline-block";
+            completato.style.display = "none"; // Nascondi il simbolo di completamento*/
+
+            const lenteIcon = document.getElementById('lenteIcon');
+            const iconSVG = document.getElementById('iconSVG');
+
+            // Passa a "loading"
+            lenteIcon.className = 'loading';
+            iconSVG.style.display = 'none'; // Nascondi l'icona della lente
+
+            // Prendi il valore della textarea
+            const luogoUtente = document.getElementById("inputArea").value;
+
+            try {
+                // Invia una richiesta POST al server con il parametro
+                const response = await fetch("/getURLs", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json", // Specifica il tipo di contenuto
+                    },
+                    body: JSON.stringify({ luogoUtente: luogoUtente }), // Invia il valore come JSON
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                // Ottieni il valore restituito dal backend
+                const data = await response.json();
+
+                // Assegna il risultato alla variabile globale
+                // Estrai i tre valori dalla risposta
+                 listaStringhe = data.lista_stringhe; // Lista di stringhe
+                 tuplaDouble = data.tupla_double;     // Tupla di double
+                 stringa = data.stringa;             // Stringa
+
+                // Usa i valori restituiti
+                console.log("Lista di stringhe:", listaStringhe);
+                console.log("Tupla di double:", tuplaDouble);
+                console.log("Stringa:", stringa);
+
+                // Assegna i risultati alla variabile globale (se necessario)
+                risultati = {
+                    listaStringhe: listaStringhe,
+                    tuplaDouble: tuplaDouble,
+                    stringa: stringa
+                };
+                // Usa il valore restituito
+                console.log("Risultati memorizzati:", risultati);
+
+                // (Opzionale) Mostra i risultati nella pagina
+               // const outputDiv = document.getElementById("output");
+                //outputDiv.innerHTML = "Risultati:<br>" + JSON.stringify(data);
+            } catch (error) {
+                console.error("Errore durante la richiesta:", error);
+            } finally {
+                // Nascondi il simbolo di caricamento e mostra il simbolo di completamento
+                //loader.style.display = "none";
+                //completato.style.display = "inline-block";
+                lenteIcon.className = 'completed';
+        iconSVG.style.display = 'block'; // Mostra di nuovo l'icona, ma modificata
+        iconSVG.innerHTML = '<path d="M9 16.2l-3.5-3.5 1.4-1.4L9 13.4l4.6-4.6 1.4 1.4L9 16.2z"/>'; // Aggiungi una spunta
+            }
+        }
+
+
+        function recuperaLinksImmagini() {
+    const rettangoli = document.querySelectorAll(".rettangolo"); // Trova tutti i rettangoli
+    const linksImmagini = [];
+
+    rettangoli.forEach((rettangolo) => {
+        const immagine = rettangolo.querySelector(".rettangolo-immagine img"); // Trova l'immagine corrente
+        if (immagine && immagine.src) {
+            linksImmagini.push(immagine.src); // Aggiungi il link dell'immagine corrente
+        }
+    });
+
+    // Mostra i link raccolti (puoi fare quello che vuoi con questi link)
+    console.log("Post!");
+    console.log("Links delle immagini correnti:", linksImmagini);
+    console.log("Coordinate: ", tuplaDouble);
+    console.log("Luogo: ", stringa);
+    //alert("Links delle immagini correnti:\n" + linksImmagini.join("\n"));
+}
+
+
+
+
+
+
+
+
+
+
+
+async function predictLike() {
+    const descrizione = document.getElementById("Descrizione").value;
+
+    const rettangoli = document.querySelectorAll(".rettangolo"); // Trova tutti i rettangoli
+    const linksImmagini = [];
+
+    const numeroFollower = document.getElementsByName("numeroFollower")[0]?.value || 0;
+
+    rettangoli.forEach((rettangolo) => {
+        const immagine = rettangolo.querySelector(".rettangolo-immagine img"); // Trova l'immagine corrente
+        if (immagine && immagine.src) {
+            linksImmagini.push(immagine.src); // Aggiungi il link dell'immagine corrente
+        }
+    });
+
+    const numImmagini = linksImmagini.length; // Calcola la lunghezza dell'array
+
+    try {
+        const response = await fetch("/predictLike", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ descrizione, numImmagini, numeroFollower, stringa }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Errore HTTP! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Risultati:", data);
+        alert("Risultati: " + JSON.stringify(data));
+    } catch (error) {
+        console.error("Errore durante la richiesta:", error);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+</head>
+
+
+
+
+
+<body style="height: 100%; width: 100%; margin:0;">
+
+    <div id="ricerca_luogo" style="height: 7.5%; background-color: #1F1D36; display: flex; align-items: center; justify-content: center;">
+        <div style="position: relative; width: 70%;">
+            <!-- Text Area -->
+            <textarea id="inputArea" placeholder="Inserisci un luogo"></textarea>
+            <!-- Lente d'ingrandimento -->
+            <div id="lenteIcon" onclick="getURLs_interface()">
+                <svg id="iconSVG" viewBox="0 0 24 24" width="20" height="20" fill="white">
+                    <path d="M10 2a8 8 0 105.293 14.707l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div id="foto" style="height: 55%; background-color: #1F1D36; display: flex; justify-content: center; align-items: center; position: relative;">
+        <!-- Icona del cerchio con il "+" -->
+        <div id="iconContainer" onclick="aggiungiRettangolo()">
+            <span style="font-size: 30px; font-weight: bold; color:white">+</span>
+        </div>
+    </div>
+
+
+    
+
+    <div id="descrizione" style="height: 30%; background-color: #1F1D36; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+
+        <!-- TextArea per "Aggiungi Descrizione" -->
+        <div>
+            <label for="Descrizione" style="color: white;">Aggiungi Descrizione</label>
+            <textarea id="Descrizione" placeholder="Scrivi qui la descrizione..." style="width: 100%; height: 60px; border: 1px solid #ccc; border-radius: 5px; padding: 10px; resize: none; margin-top: 5px;"></textarea>
+        </div>
+
+        <div style="margin-left: 10px;">
+            <label for="numeroFollower" style="color: white;">Numero di Follower</label>
+            <input type="number" id="inputArea" name="numeroFollower" style="width: 130px; margin-top: 5px;">
+        </div>
+                
+    </div>
+        
+        <!-- Pulsante "Predict Like" -->
+        <button onclick="predictLike()" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+            Predict Like
+        </button>
+
+    </div>
+
+
+
+
+
+    <div id="post_buttons" style="height: 5%; background-color: white; display: flex; justify-content: center; align-items: center;">
+        <button onclick="recuperaLinksImmagini()" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Recupera Links Immagini
+        </button>
+    </div>
+</body>
+
+
+</html>
