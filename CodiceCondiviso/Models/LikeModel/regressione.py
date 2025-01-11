@@ -5,8 +5,8 @@ project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(project_path)"""
 
 import os
-from like_model import train_model, split_data, preprocess_data, load_dataset, evaluate_model, predict_likes
-from pochiFollower_regressione import model_operations, predictFewFollowerLike
+from ExploreWorld.CodiceCondiviso.Models.LikeModel.like_model import train_model, split_data, preprocess_data, load_dataset, evaluate_model, predict_likes
+from  ExploreWorld.CodiceCondiviso.Models.LikeModel.pochiFollower_regressione import model_operations, predictFewFollowerLike
 import pandas as pd
 
 def predictLikes(post):

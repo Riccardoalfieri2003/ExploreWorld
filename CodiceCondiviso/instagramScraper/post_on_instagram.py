@@ -9,7 +9,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.common.exceptions import NoSuchElementException
 import time
 import os
-from create_driver import createDriver
+from ExploreWorld.CodiceCondiviso.instagramScraper.create_driver import createDriver
 
 def login_to_instagram(driver, username, password):
     # Apre la pagina principale di Instagram
@@ -153,47 +153,3 @@ def post(image_path,description,luogo):
         print(e)
 
     return
-"""
-if __name__ == "__main__":
-    # Percorso del driver di Chrome
-    #chrome_driver_path = r'C:\Users\Ciccio Mascolo\Desktop\chromedriver-win64\chromedriver.exe'
-    
-
-    # Configurazione delle opzioni del driver di Chrome
-    #options = Options()
-    #options.add_argument("--start-maximized")  # Avvia il browser in modalità a schermo intero
-    #options.add_argument("--disable-notifications")  # Disabilita le notifiche del browser
-
-    # Inizializza il driver con le opzioni e il percorso specificato
-    #driver = webdriver.Chrome(service=Service(chrome_driver_path), options=options)
-
-    driver=createDriver()
-
-    try:
-        # Credenziali dell'account Instagram
-        username = "calangeloorey"  # Sostituisci con il nome utente del tuo account
-        password = "Fraccardo2003"  # Sostituisci con la password del tuo account
-
-        # Percorso dell'immagine da caricare
-        image_path = [
-            r"C:\Users\rical\OneDrive\Desktop\Wallpaper\NewYork.jpg",
-            r"C:\Users\rical\OneDrive\Desktop\Wallpaper\MayaBay-Thailand.jpg",
-            r"C:\Users\rical\OneDrive\Desktop\Wallpaper\Komodo.jpg"
-            ]# Percorso dell'immagine
-
-
-        # Descrizione del post
-        description = "Panorama di ischia"  # Testo della descrizione
-
-        location = "Ischia";
-
-        # Esegue il login e pubblica il post
-        login_to_instagram(driver, username, password)
-        upload_post(driver, image_path, description,location)
-
-        print("Post pubblicato con successo!")  # Messaggio di conferma
-    except Exception as e:
-        print(f"Errore: {e}")  # Mostra eventuali errori
-    finally:
-        driver.quit()  # Chiude il browser anche in caso di errori
-"""

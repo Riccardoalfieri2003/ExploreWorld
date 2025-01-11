@@ -12,10 +12,10 @@ instagram_scraper_path = os.path.abspath(os.path.join(project_path, 'Models'))
 sys.path.append(instagram_scraper_path)
 
 
-from googleScraper.google_scraping_thread import getURLs
-from Models.LikeModel.regressione import predictLikes
-from Models.getModelPredictions import getPredictions
-
+from ExploreWorld.CodiceCondiviso.googleScraper.google_scraping_thread import getURLs
+from ExploreWorld.CodiceCondiviso.Models.LikeModel.regressione import predictLikes
+from ExploreWorld.CodiceCondiviso.Models.getModelPredictions import getPredictions
+from ExploreWorld.CodiceCondiviso.instagramScraper.post_on_instagram import post
 
 """
 palette:
@@ -134,7 +134,23 @@ def predict_like():
 
 
 
+@app.route("/pubblica", methods=["POST"])
+def pubblica():
+    dati = request.json
 
+    descrizione = dati.get("descrizione", "")
+    luogo = dati.get("luogo", "")
+    immagini = dati.get("immagini", [])
+
+    if not immagini:
+        return jsonify({"message": "Errore: Nessuna immagine fornita per la pubblicazione."}), 400
+
+    try:
+        post(image_path=immagini, description=descrizione, luogo=luogo)
+        return jsonify({"message": "Post pubblicato con successo su Instagram!"})
+    except Exception as e:
+        print(f"Errore durante la pubblicazione: {e}")
+        return jsonify({"message": "Si è verificato un errore durante la pubblicazione."}), 500
 
 
 
