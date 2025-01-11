@@ -707,46 +707,26 @@ async function predictLike() {
 
     
 
-    <div id="descrizione" style="height: 30%; background-color: #1F1D36; display: flex; flex-direction: column; align-items: center; justify-content: center;">
 
-        <!-- TextArea per "Aggiungi Descrizione" -->
-        <div>
-            <label for="Descrizione" style="color: white;">Aggiungi Descrizione</label>
-            <textarea id="Descrizione" placeholder="Scrivi qui la descrizione..." style="width: 100%; height: 60px; border: 1px solid #ccc; border-radius: 5px; padding: 10px; resize: none; margin-top: 5px;"></textarea>
+    <div id="descrizione" style="background-color: #1F1D36; padding: 20px; display: flex; align-items: center; gap: 10px;">
+        <div style="flex: 1;">
+            <!-- TextArea per descrizione -->
+            <textarea id="Descrizione" placeholder="Scrivi qui la descrizione..." style="width: 96.5%; height: 312px; border: 2px solid #E9A6A6; border-radius: 10px; padding: 10px; background-color: #3F3351; color: white;"></textarea>
         </div>
-
-        <div style="margin-left: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
             <label for="numeroFollower" style="color: white;">Numero di Follower</label>
-            <input type="number" id="inputArea" name="numeroFollower" style="width: 130px; margin-top: 5px;">
+            <input type="number" id="inputArea" name="numeroFollower" style="width: 160px; margin-top: 5px;">
+            <div style="color: white; font-size: 16px;">Like predetti in base al post: <strong>(inserisci un valore numerico)</strong></div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="predictLike()" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Predict Like</button>
+                <button onclick="pubblicaSuInstagram()" style="padding: 10px 20px; background-color: #E1306C; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; display: flex; align-items: center;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo" style="width: 20px; height: 20px; margin-right: 10px;">
+                    Pubblica su Instagram
+                </button>
+            </div>
         </div>
-                
-    </div>
-        
-        <!-- Pulsante "Predict Like" -->
-        <button onclick="predictLike()" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
-            Predict Like
-        </button>
-
     </div>
 
 
-    <div id="instagram_publish" style="height: 5%; background-color: white; display: flex; justify-content: center; align-items: center;">
-    <button onclick="pubblicaSuInstagram()" style="padding: 10px 20px; background-color: #E1306C; color: white; border: none; border-radius: 5px; cursor: pointer;">
-        Pubblica su Instagram
-    </button>
-</div>
-
-
-
-
-
-
-    <div id="post_buttons" style="height: 5%; background-color: white; display: flex; justify-content: center; align-items: center;">
-        <button onclick="recuperaLinksImmagini()" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            Recupera Links Immagini
-        </button>
-    </div>
 </body>
-
-
 </html>
