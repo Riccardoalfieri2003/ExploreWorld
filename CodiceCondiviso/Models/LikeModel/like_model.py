@@ -3,10 +3,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-
-
-
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # 1. Caricamento del dataset
 def load_dataset(file_path):
@@ -97,7 +95,30 @@ def predict_likes(model, new_data):
 
     return final_prediction
 
+#Funzione che permette la creazione del Grafico di Testing e Training
+def plot_regression_results(model, X_train, y_train, X_test, y_test):
+        # Predizioni sui dati di training e test
+        train_predictions = model.predict(X_train)
+        test_predictions = model.predict(X_test)
 
+        # Crea un DataFrame per facilitare il plot
+        train_results = pd.DataFrame({'fit': train_predictions, 'medv': y_train, 'set': 'train'})
+        test_results = pd.DataFrame({'fit': test_predictions, 'medv': y_test, 'set': 'test'})
+        results = pd.concat([train_results, test_results])
+
+        # Plot
+        plt.figure(figsize=(8, 8))
+        sns.scatterplot(data=results, x='fit', y='medv', hue='set', palette={'train': 'teal', 'test': 'salmon'})
+        plt.plot([results['fit'].min(), results['fit'].max()], [results['fit'].min(), results['fit'].max()],
+                 color='black', linestyle='--')
+        plt.title('Confronto tra Predizioni e Valori Reali')
+        plt.xlabel('Predizioni (fit)')
+        plt.ylabel('Valori Reali (medv)')
+        plt.legend(title='Set')
+        plt.grid(True)
+        plt.savefig("regression_results2.png", dpi=300)
+
+        #plot_regression_results(model, X_train, y_train, X_test, y_test) da richiamare nel main
 
 """
 
