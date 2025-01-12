@@ -63,6 +63,7 @@ def plot_regression_results(model, X_train, y_train, X_test, y_test):
         train_predictions = model.predict(X_train)
         test_predictions = model.predict(X_test)
 
+
         # Crea un DataFrame per facilitare il plot
         train_results = pd.DataFrame({'fit': train_predictions, 'medv': y_train, 'set': 'train'})
         test_results = pd.DataFrame({'fit': test_predictions, 'medv': y_test, 'set': 'test'})

@@ -118,6 +118,7 @@ def plot_regression_results(model, X_train, y_train, X_test, y_test):
         plt.grid(True)
         plt.savefig("regression_results2.png", dpi=300)
 
+
         #plot_regression_results(model, X_train, y_train, X_test, y_test) da richiamare nel main
 
 """
