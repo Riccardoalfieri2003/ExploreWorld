@@ -19,12 +19,25 @@ from MareModel.MGetPredictionClass import MareGetClassPrediction
 from MontagneModel.MountGetPredictionClass import MountainGetClassPrediction
 from CittaModel.CGetPredictionClass import CittaGetClassPrediction
 
-TimeModel = load_model('Models/TimeModel/Time_classifier.h5')
-PhotoModel = load_model('Models/PhotoOrNotModel/PhotoOrNot_classifier.h5')
-PeopleModel=load_model('Models/PeopleModel/People_classifier.h5')
-MareModel=load_model('Models/MareModel/Mare_classifier.h5')
-MontagnaModel=load_model('Models/MontagneModel/Montagne_classifier.h5')
-CittaModel=load_model('Models/CittaModel/Citta_classifier.h5')
+
+# Ottieni il percorso assoluto della directory del progetto
+project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+# Percorsi assoluti per i modelli
+people_model_path = os.path.join(project_path, 'Models', 'PeopleModel', 'PeopleModel_quantized.tflite')
+time_model_path = os.path.join(project_path, 'Models', 'TimeModel', 'TimeModel_quantized.tflite')
+photo_model_path = os.path.join(project_path, 'Models', 'PhotoOrNotModel', 'PhotoModel_quantized.tflite')
+mare_model_path = os.path.join(project_path, 'Models', 'MareModel', 'MareModel_quantized.tflite')
+montagna_model_path = os.path.join(project_path, 'Models', 'MontagneModel', 'MontagneModel_quantized.tflite')
+citta_model_path = os.path.join(project_path, 'Models', 'CittaModel', 'CittaModel_quantized.tflite')
+
+# Caricamento dei modelli
+PeopleModel = load_model(people_model_path)
+TimeModel = load_model(time_model_path)
+PhotoModel = load_model(photo_model_path)
+MareModel = load_model(mare_model_path)
+MontagnaModel = load_model(montagna_model_path)
+CittaModel = load_model(citta_model_path)
 
 
 print("Modelli caricati")
@@ -87,7 +100,7 @@ def getPredictions_noTimeout(url):
     isMare,isMontagna,isCitta=MareMontagnaCittaGetClassPrediction(MareMontagnaCittaModel,img)"""
 
 
-    return imageType,peopleOrNot,time,isMare,isMontagna,isCitta
+    return PhotoModelPrediction,TimeModelPrediction,PeopleModelPrediction,MarePrediction,MontagnePrediction,CittaPrediction
 
 
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
