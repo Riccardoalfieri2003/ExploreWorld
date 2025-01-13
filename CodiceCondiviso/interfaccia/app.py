@@ -7,24 +7,36 @@ import sys
 project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(project_path)
 
-# Percorso per il modulo like_model
-instagram_scraper_path = os.path.abspath(os.path.join(project_path, 'Models'))
+
+
+google_scraper_path = os.path.abspath(os.path.join(project_path, 'googleScraper'))
+sys.path.append(google_scraper_path)
+from googleScraper.google_scraping_thread import getURLs
+
+
+models = os.path.abspath(os.path.join(project_path, 'Models'))
+sys.path.append(models)
+
+from Models.getModelPredictions import getPredictions
+
+
+like_model_path = os.path.abspath(os.path.join(models, 'LikeModel'))
+sys.path.append(like_model_path)
+from Models.LikeModel.regressione import predictLikes
+
+
+
+map_path = os.path.abspath(os.path.join(project_path, 'map'))
+sys.path.append(map_path)
+from map.writeInfos import salva_in_txt
+
+
+instagram_scraper_path = os.path.abspath(os.path.join(project_path, 'instagramScraper'))
 sys.path.append(instagram_scraper_path)
+from instagramScraper.post_on_instagram import post
 
 
-from ExploreWorld.CodiceCondiviso.googleScraper.google_scraping_thread import getURLs
-from ExploreWorld.CodiceCondiviso.Models.LikeModel.regressione import predictLikes
-from ExploreWorld.CodiceCondiviso.Models.getModelPredictions import getPredictions
-from ExploreWorld.CodiceCondiviso.instagramScraper.post_on_instagram import post
 
-"""
-palette:
-scuro: 1F1D36
-medio scuro: 3F3351
-medio: #5C3B65
-medio chiaro: 864879
-chiaro: E9A6A6
-"""
 
 
 app = Flask(__name__)
@@ -134,13 +146,62 @@ def predict_like():
 
 
 
+
+
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from PIL import Image
+import numpy as np
+import urllib.request
+import tempfile
+
+
+def gestisci_immagini(immagini):
+    foto = []
+    percorsi_foto = []  # Lista per salvare i percorsi assoluti delle immagini
+
+    for immagine in immagini:
+        # Verifica se il percorso è un URL o un file locale
+        if immagine.startswith("http://") or immagine.startswith("https://"):
+            # Per URL: scarica l'immagine in un file temporaneo
+            with urllib.request.urlopen(immagine) as url:
+                # Crea un file temporaneo per salvare l'immagine
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
+                    temp_file.write(url.read())  # Salva il contenuto dell'URL nel file
+                    percorso_assoluto = temp_file.name  # Ottieni il percorso assoluto del file
+                    percorsi_foto.append(percorso_assoluto)
+        else:
+            # Per file locale
+            if not os.path.exists(immagine):
+                raise FileNotFoundError(f"Errore: Immagine non trovata - {immagine}")
+            percorso_assoluto = os.path.abspath(immagine)  # Ottieni il percorso assoluto
+            percorsi_foto.append(percorso_assoluto)
+
+    return percorsi_foto
+
 @app.route("/pubblica", methods=["POST"])
 def pubblica():
     dati = request.json
 
     descrizione = dati.get("descrizione", "")
     luogo = dati.get("luogo", "")
+    coordinate = dati.get("coordinate", "")
     immagini = dati.get("immagini", [])
+
+    #luogo="Hawaii"
+    #coordinate=(21.304547,-157.855676)
+
+    salva_in_txt(luogo,coordinate,immagini)
+
+    #print(immagini)
+
+    """for immagine in immagini:
+        #img = mpimg.imread(immagine)
+        img = Image.open(immagine)
+        plt.imshow(img)
+        plt.axis('off')  # Rimuove gli assi
+        plt.show()
 
     if not immagini:
         return jsonify({"message": "Errore: Nessuna immagine fornita per la pubblicazione."}), 400
@@ -151,6 +212,52 @@ def pubblica():
     except Exception as e:
         print(f"Errore durante la pubblicazione: {e}")
         return jsonify({"message": "Si è verificato un errore durante la pubblicazione."}), 500
+    
+    try:
+
+        foto=[]
+        for immagine in immagini:
+
+            # Verifica se il percorso è un URL o un file locale
+            if immagine.startswith("http://") or immagine.startswith("https://"):
+                # Per URL
+                with urllib.request.urlopen(immagine) as url:
+                    img = Image.open(url)
+                    foto.append(img)
+            else:
+                # Per file locale
+                if not os.path.exists(immagine):
+                    return jsonify({"message": f"Errore: Immagine non trovata - {immagine}"}), 400
+                img = Image.open(immagine)
+                foto.append(img)
+
+            
+
+            # Visualizza l'immagine
+            for img in foto:
+                plt.imshow(np.array(img))
+                plt.axis('off')  # Rimuove gli assi
+                plt.show()
+
+        # Simula la pubblicazione del post
+        #post(image_path=immagini, description=descrizione, luogo=luogo)
+        return jsonify({"message": "Post pubblicato con successo su Instagram!"})"""
+    
+    try:
+        photos_path=gestisci_immagini(immagini)
+        print(photos_path)
+        post(image_path=photos_path, description=descrizione, luogo=luogo)
+        return jsonify({"message": "Post pubblicato con successo su Instagram!"})
+
+    except Exception as e:
+        print(f"Errore durante la pubblicazione: {e}")
+        return jsonify({"message": "Si è verificato un errore durante la pubblicazione."}), 500
+    
+
+
+
+
+
 
 
 
@@ -170,7 +277,7 @@ def processa_azione():
 
     #print(listaStringhe)
 
-    """ 
+    """
     listaStringhe = [
     "https://lh5.googleusercontent.com/p/AF1QipP1y1Rt6sL6iJuJKLAzn5GaQ0HDBuAKdyFm9kVC=w2030-h477-k-no",
     "https://lh5.googleusercontent.com/p/AF1QipPkC8y1ssyxvFdijmQ_1JsBZow6TLXv00Pi7U_n=w2030-h1520-k-no",
@@ -239,28 +346,35 @@ def processa_azione():
 
 
             if len(opzioni1)==1:
-                if 'Mattina' in opzioni1 and predictions[2]!=0: continue
-                if 'Alba/Tramonto' in opzioni1 and predictions[2]!=1: continue
-                if 'Notte' in opzioni1 and predictions[2]!=2: continue
+                if 'Mattina' in opzioni1 and predictions[1]!=0: continue
+                if 'Alba/Tramonto' in opzioni1 and predictions[1]!=1: continue
+                if 'Notte' in opzioni1 and (predictions[1]!=2 and predictions[1]!=3): continue
 
             if len(opzioni1)==2:
-                if 'Mattina' not in opzioni1 and predictions[2]==0: continue
-                if 'Alba/Tramonto' not in opzioni1 and predictions[2]==1: continue
-                if 'Notte' not in opzioni1 and predictions[2]==2: continue
+                if 'Mattina' not in opzioni1 and predictions[1]==0: continue
+                if 'Alba/Tramonto' not in opzioni1 and predictions[1]==1: continue
+                if 'Notte' not in opzioni1 and (predictions[1]==2 and predictions[1]==3): continue
 
 
             
 
 
             if len(opzioni2)==1:
-                if 'Persone' in opzioni2 and predictions[1]==0: continue
-                if 'No Persone' in opzioni2 and predictions[1]==1: continue
+                if 'Persone' in opzioni2 and predictions[2]==0: continue
+                if 'No Persone' in opzioni2 and predictions[2]==1: continue
 
      
 
+            if 'Mare' in opzioni3 and predictions[3]==0: continue
+            if 'Montagna' in opzioni3 and predictions[4]==0: continue
+            if 'Città' in opzioni3 and predictions[5]==0: continue
+
+            if 'Mare' not in opzioni3 and predictions[3]==1: continue
+            if 'Montagna' not in opzioni3 and predictions[4]==1: continue
+            if 'Città' not in opzioni3 and predictions[5]==1: continue
 
 
-            if len(opzioni3)==1:
+            """if len(opzioni3)==1:
                 if 'Mare' in opzioni3 and predictions[3]==0: continue
                 if 'Montagna' in opzioni3 and predictions[4]==0: continue
                 if 'Città' in opzioni3 and predictions[5]==0: continue
@@ -268,7 +382,7 @@ def processa_azione():
             if len(opzioni3)==2:
                 if 'Mare' not in opzioni3 and predictions[3]==1: continue
                 if 'Montagna' not in opzioni3 and predictions[4]==1: continue
-                if 'Città' not in opzioni3 and predictions[5]==1: continue
+                if 'Città' not in opzioni3 and predictions[5]==1: continue"""
 
 
 
